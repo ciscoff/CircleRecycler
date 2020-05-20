@@ -1,24 +1,26 @@
 package s.yzrlykov.circlerecycler
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
+import s.yzrlykov.circlerecycler.stages.Activity01CirclePoints
 
 class MainActivity : AppCompatActivity() {
 
-    private val menus = listOf("First", "Second", "Third", "First", "Second", "Third", "First", "Second", "Third", "First", "Second", "Third", "First", "Second", "Third", "First", "Second", "Third")
-
-    lateinit var scrollView : NestedScrollView
+    lateinit var scrollView: NestedScrollView
     lateinit var cardsContainer: LinearLayout
+
+    private val stages = mapOf(Activity01CirclePoints::class.java to R.string.menu_01_circle_points)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         findView()
-        inflateMenu(cardsContainer, menus)
+        inflateMenu(cardsContainer, stages)
     }
 
     private fun findView() {
@@ -26,14 +28,24 @@ class MainActivity : AppCompatActivity() {
         cardsContainer = findViewById(R.id.cards_container)
     }
 
-    private fun inflateMenu(root: LinearLayout, titles : List<String>) {
+    /**
+     * Инфлайтим пункты меню. Каждый пункт создает отдельную активити.
+     */
+    private fun inflateMenu(root: LinearLayout, model: Map<out Class<*>, Int>) {
 
         val inflater = layoutInflater
 
-        titles.forEach {
+        model.entries.forEach { entry ->
+            val (clazz, stringId) = entry
+
             val cardView = inflater.inflate(R.layout.layout_card_main_menu, root, false)
             val titleView = cardView.findViewById<TextView>(R.id.tv_title)
-            titleView.text = it
+            titleView.text = getString(stringId)
+
+            cardView.setOnClickListener {
+                startActivity(Intent(this, clazz))
+            }
+
             root.addView(cardView)
         }
     }
