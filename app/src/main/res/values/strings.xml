@@ -3,4 +3,8 @@
 
     <!-- Menus -->
     <string name="menu_01_circle_points">Create Circle Points</string>
+
+
+<!--    Buttons -->
+    <string name="button_draw">Draw</string>
 </resources>

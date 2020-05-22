@@ -6,7 +6,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
-import s.yzrlykov.circlerecycler.stages.Activity01CirclePoints
+import s.yzrlykov.circlerecycler.stages.s01.Activity01CirclePoints
 
 class MainActivity : AppCompatActivity() {
 
