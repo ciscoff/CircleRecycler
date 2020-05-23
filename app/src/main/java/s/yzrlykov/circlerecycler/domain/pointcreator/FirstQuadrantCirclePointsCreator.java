@@ -46,6 +46,16 @@ public class FirstQuadrantCirclePointsCreator implements CirclePointsCreator {
     }
 
     /**
+     * Я добавил чтобы назначить цвет на все сегменты
+     */
+    public FirstQuadrantCirclePointsCreator(int radius, int x0, int y0, int color) {
+        mRadius = radius;
+        mX0 = x0;
+        mY0 = y0;
+        mCircleMirrorHelper = new FirstQuadrantCircleMirrorHelper(x0, y0, color);
+    }
+
+    /**
      * This method is based on "Midpoint circle algorithm."
      * <p>
      * We use three steps:
@@ -91,8 +101,18 @@ public class FirstQuadrantCirclePointsCreator implements CirclePointsCreator {
         createFirstOctant(circlePoints, mPaintFor1stOctant);
 
         /** at this stage "circleIndexPoint" and "circlePointIndex" contains only the points from first octant*/
-        mCircleMirrorHelper.mirror_2nd_Octant(
-                circlePoints);
+        mCircleMirrorHelper.mirror_2nd_Octant(circlePoints);
+    }
+
+    /**
+     * Это я добавил, чтобы рисовать со своей Paint
+     */
+    @Override
+    public void fillCirclePointsFirstQuadrant(List<Point> circlePoints, Paint paint) {
+        createFirstOctant(circlePoints, paint);
+
+        /** at this stage "circleIndexPoint" and "circlePointIndex" contains only the points from first octant*/
+        mCircleMirrorHelper.mirror_2nd_Octant(circlePoints);
     }
 
     /**

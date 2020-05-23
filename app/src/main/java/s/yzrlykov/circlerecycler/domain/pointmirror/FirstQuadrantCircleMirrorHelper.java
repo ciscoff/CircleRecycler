@@ -42,6 +42,18 @@ public class FirstQuadrantCircleMirrorHelper implements CircleMirrorHelper {
         mY0 = y0;
     }
 
+    /**
+     * Я добавил для управления цветом.
+     */
+    public FirstQuadrantCircleMirrorHelper(int x0, int y0, int color) {
+        mX0 = x0;
+        mY0 = y0;
+
+        _2_octant_paint.setColor(color);
+        _2_quadrant_paint.setColor(color);
+        _2_semicircle_paint.setColor(color);
+    }
+
     enum Action {
         MIRROR_2ND_OCTANT,
         MIRROR_2ND_QUADRANT,

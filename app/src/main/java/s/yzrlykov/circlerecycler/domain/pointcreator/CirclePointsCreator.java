@@ -1,5 +1,7 @@
 package s.yzrlykov.circlerecycler.domain.pointcreator;
 
+import android.graphics.Paint;
+
 import java.util.List;
 
 import s.yzrlykov.circlerecycler.domain.Point;
@@ -15,9 +17,10 @@ public interface CirclePointsCreator {
 
     void fillCirclePoints(List<Point> circlePoints);
 
+    void fillCirclePointsFirstQuadrant(List<Point> circlePoints);
+
     /**
      * Я добавил этот метод, чтобы ограничиться только точками первой четверти
-     * @param circlePoints
      */
-    void fillCirclePointsFirstQuadrant(List<Point> circlePoints);
+    void fillCirclePointsFirstQuadrant(List<Point> circlePoints, Paint paint);
 }
