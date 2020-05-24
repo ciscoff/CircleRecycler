@@ -1,10 +1,9 @@
 package s.yzrlykov.circlerecycler.stages.s01
 
-import android.graphics.Color
 import android.graphics.Paint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.material.button.MaterialButton
 import io.reactivex.Completable
@@ -12,8 +11,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import s.yzrlykov.circlerecycler.R
 import s.yzrlykov.circlerecycler.domain.Point
+import s.yzrlykov.circlerecycler.domain.Shape
 import s.yzrlykov.circlerecycler.domain.pointcreator.FirstQuadrantCirclePointsCreator
-import s.yzrlykov.circlerecycler.logIt
+import s.yzrlykov.circlerecycler.extensions.dimensionPix
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -26,7 +26,7 @@ class Activity01CirclePoints : AppCompatActivity() {
     private lateinit var circlePointsCreator: FirstQuadrantCirclePointsCreator
     private lateinit var button: MaterialButton
     private lateinit var drawView: DrawView
-    private lateinit var tvLog : TextView
+    private lateinit var tvLog: TextView
 
     // Список точек
     private val points = mutableListOf<Point>()
@@ -42,6 +42,7 @@ class Activity01CirclePoints : AppCompatActivity() {
     private val y0 = 0f
 
     private val paint = Paint()
+    private val paintShape = Paint()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,6 +99,8 @@ class Activity01CirclePoints : AppCompatActivity() {
         paint.color = ContextCompat.getColor(this, R.color.quadrant_fill_color)
         paint.strokeWidth = 1f
 
+        paintShape.color = ContextCompat.getColor(this, R.color.colorPrimary)
+
         // Закрашиваем оба сегмента одним цветом
         circlePointsCreator =
             FirstQuadrantCirclePointsCreator(radius, x0.toInt(), y0.toInt(), paint.color)
@@ -108,10 +111,28 @@ class Activity01CirclePoints : AppCompatActivity() {
         return Completable.create { emitter ->
             points.clear()
             circlePointsCreator.fillCirclePointsFirstQuadrant(points, paint)
-            drawView.init(points, x0 to y0)
+            val shapes = createShapes(resources.getInteger(R.integer.shapes_qty))
+
+            drawView
+                .init(points, x0 to y0)
+                .addShapes(shapes)
+
             emitter.onComplete()
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    private fun createShapes(qty: Int): List<Shape> {
+
+        val step = points.size / (qty + 1)
+        val dimen = dimensionPix(R.dimen.oval_shape_diameter)
+
+        return arrayListOf<Shape>().apply {
+            for (i in 1..qty) {
+                val point = points[i * step]
+                add(Shape(point.x, point.y, paintShape, dimen))
+            }
+        }
     }
 }
