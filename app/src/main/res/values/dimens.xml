@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="oval_shape_diameter">20dp</dimen>
+    <dimen name="list_item_dimen">60dp</dimen>
 </resources>

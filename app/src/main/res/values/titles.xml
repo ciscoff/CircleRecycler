@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="list_item_titles">
-        <item>Element 01</item>
-        <item>Element 02</item>
-        <item>Element 03</item>
-        <item>Element 04</item>
-        <item>Element 05</item>
-        <item>Element 06</item>
-        <item>Element 07</item>
-        <item>Element 08</item>
-        <item>Element 09</item>
-        <item>Element 10</item>
+        <item>Elem 01</item>
+        <item>Elem 02</item>
+        <item>Elem 03</item>
+        <item>Elem 04</item>
+        <item>Elem 05</item>
+        <item>Elem 06</item>
+        <item>Elem 07</item>
+        <item>Elem 08</item>
+        <item>Elem 09</item>
+        <item>Elem 10</item>
     </string-array>
 </resources>
