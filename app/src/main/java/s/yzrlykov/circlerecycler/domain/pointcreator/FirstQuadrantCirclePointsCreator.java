@@ -5,8 +5,10 @@ import android.graphics.Paint;
 import android.util.Log;
 
 import java.util.List;
+import java.util.Map;
 
-import s.yzrlykov.circlerecycler.domain.Point;
+import s.yzrlykov.circlerecycler.domain.PointS1;
+import s.yzrlykov.circlerecycler.domain.PointS2;
 import s.yzrlykov.circlerecycler.domain.pointmirror.CircleMirrorHelper;
 import s.yzrlykov.circlerecycler.domain.pointmirror.FirstQuadrantCircleMirrorHelper;
 
@@ -18,7 +20,7 @@ import s.yzrlykov.circlerecycler.domain.pointmirror.FirstQuadrantCircleMirrorHel
  * Exactly as required by "Mid point circle algorithm" but a bit modified.
  * <p>
  * "Midpoint circle algorithm" creates all 8 octant in parallel.
- * We are using "Midpoint circle algorithm" to create 1st octant and the mirror other points consecutively:
+ * We are using "Midpoint circle algorithm" to create 1st octant and the mirror other pointS1s consecutively:
  * 1 octant, 2 octant, 2 quadrant, 2 semicircle
  */
 public class FirstQuadrantCirclePointsCreator implements CirclePointsCreator {
@@ -57,67 +59,110 @@ public class FirstQuadrantCirclePointsCreator implements CirclePointsCreator {
 
     /**
      * This method is based on "Midpoint circle algorithm."
+     *
+     *  We use three steps:
+     *
+     *  1. Create 1 octant of a circle.
+     *  2. Mirror the created pointS1s for the 2nd octant
+     *  At this stage we have pointS1s for 1 quadrant of a circle
+     *
+     *  3. Mirror 2nd quadrant pointS1s using pointS1s from 1 quadrant
+     *  At this stage we have pointS1s for 1 semicircle
+     *
+     *  4. Mirror 2nd semicircle pointS1s using pointS1s from 1 semicircle
+     *
+     */
+
+    @Override
+    public void fillCirclePoints(
+            Map<Integer, PointS2> circleIndexPoint,
+            Map<PointS2, Integer> circlePointIndex)
+    {
+
+        createFirstOctant(circleIndexPoint, circlePointIndex);
+
+        /** at this stage "circleIndexPoint" and "circlePointIndex" contains only the pointS1s from first octant*/
+        mCircleMirrorHelper.mirror_2nd_Octant(
+                circleIndexPoint,
+                circlePointIndex);
+
+        /** at this stage "circleIndexPoint" and "circlePointIndex" contains only the pointS1s from first quadrant*/
+        mCircleMirrorHelper.mirror_2nd_Quadrant(
+                circleIndexPoint,
+                circlePointIndex
+        );
+
+        /** at this stage "circleIndexPoint" and "circlePointIndex" contains only the pointS1s from first semicircle*/
+        mCircleMirrorHelper.mirror_2nd_Semicircle(
+                circleIndexPoint,
+                circlePointIndex
+        );
+
+    }
+
+    /**
+     * This method is based on "Midpoint circle algorithm."
      * <p>
      * We use three steps:
      * <p>
      * 1. Create 1 octant of a circle.
-     * 2. Mirror the created points for the 2nd octant
-     * At this stage we have points for 1 quadrant of a circle
+     * 2. Mirror the created pointS1s for the 2nd octant
+     * At this stage we have pointS1s for 1 quadrant of a circle
      * <p>
-     * 3. Mirror 2nd quadrant points using points from 1 quadrant
-     * At this stage we have points for 1 semicircle
+     * 3. Mirror 2nd quadrant pointS1s using pointS1s from 1 quadrant
+     * At this stage we have pointS1s for 1 semicircle
      * <p>
-     * 4. Mirror 2nd semicircle points using points from 1 semicircle
+     * 4. Mirror 2nd semicircle pointS1s using pointS1s from 1 semicircle
      */
 
     @Override
-    public void fillCirclePoints(List<Point> circlePoints) {
+    public void fillCirclePoints(List<PointS1> circlePointS1s) {
 
         Log.v(TAG, ">> fillCirclePoints");
 
-        createFirstOctant(circlePoints, mPaintFor1stOctant);
+        createFirstOctant(circlePointS1s, mPaintFor1stOctant);
 
-        /** at this stage "circleIndexPoint" and "circlePointIndex" contains only the points from first octant*/
+        /** at this stage "circleIndexPoint" and "circlePointIndex" contains only the pointS1s from first octant*/
         mCircleMirrorHelper.mirror_2nd_Octant(
-                circlePoints);
+                circlePointS1s);
 
-        /** at this stage "circleIndexPoint" and "circlePointIndex" contains only the points from first quadrant*/
+        /** at this stage "circleIndexPoint" and "circlePointIndex" contains only the pointS1s from first quadrant*/
         mCircleMirrorHelper.mirror_2nd_Quadrant(
-                circlePoints
+                circlePointS1s
         );
 
-        /** at this stage "circleIndexPoint" and "circlePointIndex" contains only the points from first semicircle*/
+        /** at this stage "circleIndexPoint" and "circlePointIndex" contains only the pointS1s from first semicircle*/
         mCircleMirrorHelper.mirror_2nd_Semicircle(
-                circlePoints
+                circlePointS1s
         );
 
         Log.v(TAG, "<< fillCirclePoints");
     }
 
     @Override
-    public void fillCirclePointsFirstQuadrant(List<Point> circlePoints) {
+    public void fillCirclePointsFirstQuadrant(List<PointS1> circlePointS1s) {
         Log.v(TAG, ">> fillCirclePointsFirstQuadrant");
 
-        createFirstOctant(circlePoints, mPaintFor1stOctant);
+        createFirstOctant(circlePointS1s, mPaintFor1stOctant);
 
-        /** at this stage "circleIndexPoint" and "circlePointIndex" contains only the points from first octant*/
-        mCircleMirrorHelper.mirror_2nd_Octant(circlePoints);
+        /** at this stage "circleIndexPoint" and "circlePointIndex" contains only the pointS1s from first octant*/
+        mCircleMirrorHelper.mirror_2nd_Octant(circlePointS1s);
     }
 
     /**
      * Это я добавил, чтобы рисовать со своей Paint
      */
     @Override
-    public void fillCirclePointsFirstQuadrant(List<Point> circlePoints, Paint paint) {
-        createFirstOctant(circlePoints, paint);
+    public void fillCirclePointsFirstQuadrant(List<PointS1> circlePointS1s, Paint paint) {
+        createFirstOctant(circlePointS1s, paint);
 
-        /** at this stage "circleIndexPoint" and "circlePointIndex" contains only the points from first octant*/
-        mCircleMirrorHelper.mirror_2nd_Octant(circlePoints);
+        /** at this stage "circleIndexPoint" and "circlePointIndex" contains only the pointS1s from first octant*/
+        mCircleMirrorHelper.mirror_2nd_Octant(circlePointS1s);
     }
 
     /**
      * This method is based on "Midpoint circle algorithm."
-     * It creates a points that are situated in first octant.
+     * It creates a pointS1s that are situated in first octant.
      * <p>
      * First point has an index of "0", next is "1" and so on.
      * First point is (radius;0)
@@ -166,7 +211,7 @@ public class FirstQuadrantCirclePointsCreator implements CirclePointsCreator {
      * *************************
      */
     private void createFirstOctant(
-            List<Point> circlePoints,
+            List<PointS1> circlePointS1s,
             Paint paint
     ) {
 
@@ -175,7 +220,7 @@ public class FirstQuadrantCirclePointsCreator implements CirclePointsCreator {
         int decisionOver2 = 1 - x;   // Decision criterion divided by 2 evaluated at x=r, y=0
         while (y <= x) {
 
-            createPoint(x + mX0, y + mY0, circlePoints, paint);
+            createPointS1(x + mX0, y + mY0, circlePointS1s, paint);
 
             y++;
             if (decisionOver2 <= 0) {
@@ -187,14 +232,51 @@ public class FirstQuadrantCirclePointsCreator implements CirclePointsCreator {
         }
     }
 
-    private void createPoint(
+    private void createFirstOctant(
+            Map<Integer, PointS2> circleIndexPoint,
+            Map<PointS2, Integer> circlePointIndex
+    ) {
+
+        int x = mRadius;
+        int y = 0;
+        int decisionOver2 = 1 - x;   // Decision criterion divided by 2 evaluated at x=r, y=0
+        while(y <= x){
+
+            createPointS2(x + mX0, y + mY0, circleIndexPoint, circlePointIndex);
+
+            y++;
+            if (decisionOver2<=0){
+                decisionOver2 += 2 * y + 1;   // Change in decision criterion for y -> y+1
+            } else {
+                x--;
+                decisionOver2 += 2 * (y - x) + 1;   // Change for y -> y+1, x -> x-1
+            }
+        }
+    }
+
+    private void createPointS1(
             int x,
             int y,
-            List<Point> circlePoints,
+            List<PointS1> circlePointS1s,
             Paint paint) {
 
-        Point point = new Point(x, y, paint);
+        PointS1 pointS1 = new PointS1(x, y, paint);
 
-        circlePoints.add(point);
+        circlePointS1s.add(pointS1);
+    }
+
+    private void createPointS2(
+            int x,
+            int y,
+            Map<Integer, PointS2> circleIndexPoint,
+            Map<PointS2, Integer> circlePointIndex
+    ) {
+
+        int index = circleIndexPoint.size();
+
+        PointS2 point = new PointS2(x, y);
+
+        circleIndexPoint.put(index, point);
+        circlePointIndex.put(point, index);
     }
 }

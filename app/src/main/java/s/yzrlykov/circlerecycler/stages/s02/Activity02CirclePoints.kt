@@ -2,16 +2,11 @@ package s.yzrlykov.circlerecycler.stages.s02
 
 import android.graphics.Paint
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
-import io.reactivex.Completable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import s.yzrlykov.circlerecycler.R
-import s.yzrlykov.circlerecycler.domain.Point
+import s.yzrlykov.circlerecycler.domain.PointS1
 import s.yzrlykov.circlerecycler.domain.pointcreator.FirstQuadrantCirclePointsCreator
 import s.yzrlykov.circlerecycler.extensions.dimensionPix
 import kotlin.math.abs
@@ -22,7 +17,7 @@ class Activity02CirclePoints : AppCompatActivity() {
     private lateinit var recyclerView : RecyclerView
 
     // Список точек
-    private val points = mutableListOf<Point>()
+    private val points = mutableListOf<PointS1>()
 
     // Центр окружности
     private val x0 = 0f

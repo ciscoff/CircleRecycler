@@ -3,13 +3,12 @@ package s.yzrlykov.circlerecycler.stages.s02
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import s.yzrlykov.circlerecycler.domain.Point
-import s.yzrlykov.circlerecycler.logIt
+import s.yzrlykov.circlerecycler.domain.PointS1
 
 class LayoutManagerS02(
     private val radius: Int,
     private val dimen: Int,
-    private val points: List<Point>
+    private val pointS1s: List<PointS1>
 ) : RecyclerView.LayoutManager() {
 
     override fun onLayoutChildren(recycler: RecyclerView.Recycler, state: RecyclerView.State?) {
@@ -22,7 +21,7 @@ class LayoutManagerS02(
 
         var viewTop : Int
         var viewLeft : Int
-        val height = points.last().y + dimen/2
+        val height = pointS1s.last().y + dimen/2
 
         // Количество элементов в адаптере
         val itemCount = getItemCount()
@@ -37,7 +36,7 @@ class LayoutManagerS02(
             // Координата X корректируется "по окружности". Сначала находим точку
             // центра View, а затем смещаем левее на пол ширины. Получаем координату
             // левой границы View.
-            viewLeft = points[viewTop + dimen/2].x - dimen/2
+            viewLeft = pointS1s[viewTop + dimen/2].x - dimen/2
 
             val view = recycler.getViewForPosition(position)
 
@@ -52,7 +51,7 @@ class LayoutManagerS02(
 
             position++
             viewTop = position * dimen
-            fillDown = viewTop <= height && position * dimen < points.lastIndex
+            fillDown = viewTop <= height && position * dimen < pointS1s.lastIndex
         }
     }
 

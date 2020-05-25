@@ -5,13 +5,15 @@ import android.graphics.Paint;
 import android.util.Log;
 
 import java.util.List;
+import java.util.Map;
 
-import s.yzrlykov.circlerecycler.domain.Point;
+import s.yzrlykov.circlerecycler.domain.PointS1;
+import s.yzrlykov.circlerecycler.domain.PointS2;
 
 /**
  * This class is a helper for FirstQuadrantCirclePointsCreator
  * <p>
- * It can create a full circle points using points from 1st octant. It is mirroring existing points to the points in other circle sectors.
+ * It can create a full circle pointS1s using pointS1s from 1st octant. It is mirroring existing pointS1s to the pointS1s in other circle sectors.
  */
 public class FirstQuadrantCircleMirrorHelper implements CircleMirrorHelper {
 
@@ -61,7 +63,7 @@ public class FirstQuadrantCircleMirrorHelper implements CircleMirrorHelper {
     }
 
     /**
-     * This method takes the points from 1st octant and mirror them to the 2nd octant
+     * This method takes the pointS1s from 1st octant and mirror them to the 2nd octant
      * <p>
      * ^                  /
      * +y | 2nd octant    /
@@ -70,7 +72,7 @@ public class FirstQuadrantCircleMirrorHelper implements CircleMirrorHelper {
      * |     --_ /
      * |       / *_  <-- this s the point from where we start
      * |     /     |                  \
-     * |   /       | 1st Octant        | We are going through points in this direction
+     * |   /       | 1st Octant        | We are going through pointS1s in this direction
      * | /         |                   V
      * ---------------|--------------->      V
      * |            |
@@ -83,10 +85,10 @@ public class FirstQuadrantCircleMirrorHelper implements CircleMirrorHelper {
      */
     @Override
     public void mirror_2nd_Octant(
-            List<Point> circlePoints
+            List<PointS1> circlePointS1s
     ) {
 
-        int countOfPointsIn_1st_octant = circlePoints.size();
+        int countOfPointsIn_1st_octant = circlePointS1s.size();
         if (SHOW_LOGS)
             Log.v(TAG, "mirror_2nd_Octant, countOfPointsIn_1st_octant " + countOfPointsIn_1st_octant);
 
@@ -94,16 +96,33 @@ public class FirstQuadrantCircleMirrorHelper implements CircleMirrorHelper {
              pointIndex >= 0;
              pointIndex--) {
 
-            createMirroredPoint(Action.MIRROR_2ND_OCTANT, pointIndex, circlePoints);
+            createMirroredPoint(Action.MIRROR_2ND_OCTANT, pointIndex, circlePointS1s);
+        }
+    }
+
+    @Override
+    public void mirror_2nd_Octant(
+            Map<Integer, PointS2> circleIndexPoint,
+            Map<PointS2, Integer> circlePointIndex
+    ) {
+
+        int countOfPointsIn_1st_octant = circlePointIndex.size();
+        if(SHOW_LOGS) Log.v(TAG, "mirror_2nd_Octant, countOfPointsIn_1st_octant " + countOfPointsIn_1st_octant);
+
+        for(int pointIndex = countOfPointsIn_1st_octant - 1;
+            pointIndex >= 0;
+            pointIndex-- ){
+
+            createMirroredPoint(Action.MIRROR_2ND_OCTANT, pointIndex, circleIndexPoint, circlePointIndex);
         }
     }
 
     @Override
     public void mirror_2nd_Quadrant(
-            List<Point> circlePoints
+            List<PointS1> circlePointS1s
     ) {
 
-        int countOfPointsIn_1st_quadrant = circlePoints.size();
+        int countOfPointsIn_1st_quadrant = circlePointS1s.size();
         if (SHOW_LOGS)
             Log.v(TAG, "mirror_2nd_Quadrant, countOfPointsIn_1st_quadrant " + countOfPointsIn_1st_quadrant);
 
@@ -114,16 +133,36 @@ public class FirstQuadrantCircleMirrorHelper implements CircleMirrorHelper {
              pointIndex >= 0;
              pointIndex--) {
 
-            createMirroredPoint(Action.MIRROR_2ND_QUADRANT, pointIndex, circlePoints);
+            createMirroredPoint(Action.MIRROR_2ND_QUADRANT, pointIndex, circlePointS1s);
+        }
+    }
+
+    @Override
+    public void mirror_2nd_Quadrant(
+            Map<Integer, PointS2> circleIndexPoint,
+            Map<PointS2, Integer> circlePointIndex
+    ) {
+
+        int countOfPointsIn_1st_quadrant = circlePointIndex.size();
+        if(SHOW_LOGS) Log.v(TAG, "mirror_2nd_Quadrant, countOfPointsIn_1st_quadrant " + countOfPointsIn_1st_quadrant);
+
+        for(int pointIndex = countOfPointsIn_1st_quadrant
+                - 1 // last point
+                - 1 // previous to the last because last point is already in the list (x0, radius + y0). It is a point on Y axis
+            ;
+            pointIndex >= 0;
+            pointIndex-- ){
+
+            createMirroredPoint(Action.MIRROR_2ND_QUADRANT, pointIndex, circleIndexPoint, circlePointIndex);
         }
     }
 
     @Override
     public void mirror_2nd_Semicircle(
-            List<Point> circlePoints
+            List<PointS1> circlePointS1s
     ) {
 
-        int countOfPointsIn_1st_semicircle = circlePoints.size();
+        int countOfPointsIn_1st_semicircle = circlePointS1s.size();
         if (SHOW_LOGS)
             Log.v(TAG, "mirror_2nd_Semicircle, countOfPointsIn_1st_semicircle " + countOfPointsIn_1st_semicircle);
 
@@ -131,7 +170,25 @@ public class FirstQuadrantCircleMirrorHelper implements CircleMirrorHelper {
              pointIndex > 0; // don't count (radius, 0) because it already in the list
              pointIndex--) {
 
-            createMirroredPoint(Action.MIRROR_2ND_SEMICIRCLE, pointIndex, circlePoints);
+            createMirroredPoint(Action.MIRROR_2ND_SEMICIRCLE, pointIndex, circlePointS1s);
+
+        }
+    }
+
+    @Override
+    public void mirror_2nd_Semicircle(
+            Map<Integer, PointS2> circleIndexPoint,
+            Map<PointS2, Integer> circlePointIndex
+    ) {
+
+        int countOfPointsIn_1st_semicircle = circlePointIndex.size();
+        if(SHOW_LOGS) Log.v(TAG, "mirror_2nd_Semicircle, countOfPointsIn_1st_semicircle " + countOfPointsIn_1st_semicircle);
+
+        for(int pointIndex = countOfPointsIn_1st_semicircle - 2; // don't count (-radius, 0) because it already in the list
+            pointIndex > 0; // don't count (radius, 0) because it already in the list
+            pointIndex-- ){
+
+            createMirroredPoint(Action.MIRROR_2ND_SEMICIRCLE, pointIndex, circleIndexPoint, circlePointIndex);
 
         }
 
@@ -140,36 +197,75 @@ public class FirstQuadrantCircleMirrorHelper implements CircleMirrorHelper {
     private void createMirroredPoint(
             Action action,
             int pointIndex,
-            List<Point> circlePoints
+            List<PointS1> circlePointS1s
     ) {
 
-        Point pointAtIndex = circlePoints.get(pointIndex);
+        PointS1 pointS1AtIndex = circlePointS1s.get(pointIndex);
 
-        Point mirroredPoint;
+        PointS1 mirroredPointS1;
         switch (action) {
             case MIRROR_2ND_OCTANT:
-                mirroredPoint = mirror_2nd_OctantPoint(pointAtIndex, _2_octant_paint);
+                mirroredPointS1 = mirror_2nd_OctantPoint(pointS1AtIndex, _2_octant_paint);
                 break;
             case MIRROR_2ND_QUADRANT:
-                mirroredPoint = mirror_2nd_QuadrantPoint(pointAtIndex, _2_quadrant_paint);
+                mirroredPointS1 = mirror_2nd_QuadrantPoint(pointS1AtIndex, _2_quadrant_paint);
                 break;
             case MIRROR_2ND_SEMICIRCLE:
-                mirroredPoint = mirror_2nd_SemicirclePoint(pointAtIndex, _2_semicircle_paint);
+                mirroredPointS1 = mirror_2nd_SemicirclePoint(pointS1AtIndex, _2_semicircle_paint);
                 break;
             default:
                 throw new RuntimeException("Not handled action " + action);
         }
 
-        if (mirroredPoint != null) {
-            circlePoints.add(mirroredPoint);
+        if (mirroredPointS1 != null) {
+            circlePointS1s.add(mirroredPointS1);
         } else {
             if (SHOW_LOGS)
-                Log.i(TAG, "createMirroredPoint, found a point that should not be mirrored, pointAtIndex " + pointAtIndex + ", action " + action);
+                Log.i(TAG, "createMirroredPoint, found a point that should not be mirrored, pointS1AtIndex " + pointS1AtIndex + ", action " + action);
             if (SHOW_LOGS)
                 Log.i(TAG, "createMirroredPoint, this point is already created. Skip it");
 
         }
     }
+
+    private void createMirroredPoint(
+            Action action,
+            int pointIndex,
+            Map<Integer, PointS2> circleIndexPoint,
+            Map<PointS2, Integer> circlePointIndex
+    ) {
+
+        PointS2 pointS1AtIndex = circleIndexPoint.get(pointIndex);
+
+        PointS2 mirroredPointS2;
+        switch (action) {
+            case MIRROR_2ND_OCTANT:
+                mirroredPointS2 = mirror_2nd_OctantPoint(pointS1AtIndex);
+                break;
+            case MIRROR_2ND_QUADRANT:
+                mirroredPointS2 = mirror_2nd_QuadrantPoint(pointS1AtIndex);
+                break;
+            case MIRROR_2ND_SEMICIRCLE:
+                mirroredPointS2 = mirror_2nd_SemicirclePoint(pointS1AtIndex);
+                break;
+            default:
+                throw new RuntimeException("Not handled action " + action);
+        }
+
+        if (mirroredPointS2 != null) {
+            int index = circleIndexPoint.size();
+
+            circleIndexPoint.put(index, mirroredPointS2);
+            circlePointIndex.put(mirroredPointS2, index);
+        } else {
+            if (SHOW_LOGS)
+                Log.i(TAG, "createMirroredPoint, found a point that should not be mirrored, pointS1AtIndex " + pointS1AtIndex + ", action " + action);
+            if (SHOW_LOGS)
+                Log.i(TAG, "createMirroredPoint, this point is already created. Skip it");
+
+        }
+    }
+
 
     /**
      * This method takes a single point from 1st octant and mirror it to the 2nd octant
@@ -206,9 +302,9 @@ public class FirstQuadrantCircleMirrorHelper implements CircleMirrorHelper {
      * DrawPixel( x + x0,  y + y0); // Octant 1
      * DrawPixel( y + x0,  x + y0); // Octant 2
      * <p>
-     * To mirror second point using "firstOctantPoint" we have to know original x and y;
+     * To mirror second point using "firstOctantPointS1" we have to know original x and y;
      * <p>
-     * Get original x, y from "firstOctantPoint":
+     * Get original x, y from "firstOctantPointS1":
      * firstOctant_X = x + x0; -> x = firstOctant_X - x0;
      * firstOctant_Y = y + y0; -> y = firstOctant_Y - y0;
      * <p>
@@ -216,10 +312,17 @@ public class FirstQuadrantCircleMirrorHelper implements CircleMirrorHelper {
      * secondOctant_X = y + x0; -> firstOctant_Y - y0 + x0;
      * secondOctant_Y = x + y0; -> firstOctant_X - x0 + y0;
      */
-    private Point mirror_2nd_OctantPoint(Point firstOctantPoint, Paint paint) {
-        int correctedX = firstOctantPoint.x - mX0;
-        int correctedY = firstOctantPoint.y - mY0;
-        return correctedX != correctedY ? new Point(correctedY + mX0, correctedX + mY0, paint)
+    private PointS1 mirror_2nd_OctantPoint(PointS1 firstOctantPointS1, Paint paint) {
+        int correctedX = firstOctantPointS1.x - mX0;
+        int correctedY = firstOctantPointS1.y - mY0;
+        return correctedX != correctedY ? new PointS1(correctedY + mX0, correctedX + mY0, paint)
+                : null; // null means that the mirror of this point is going to be the same. (24; 24) -> mirrored (24:24)
+    }
+
+    private PointS2 mirror_2nd_OctantPoint(PointS2 firstOctantPointS1) {
+        int correctedX = firstOctantPointS1.getX() - mX0;
+        int correctedY = firstOctantPointS1.getY() - mY0;
+        return correctedX != correctedY ? new PointS2(correctedY + mX0, correctedX + mY0)
                 : null; // null means that the mirror of this point is going to be the same. (24; 24) -> mirrored (24:24)
     }
 
@@ -256,8 +359,12 @@ public class FirstQuadrantCircleMirrorHelper implements CircleMirrorHelper {
      * x3* = x0 - (x3 - x0) = 2*x0 - x3
      * y3* = y3
      */
-    private Point mirror_2nd_QuadrantPoint(Point secondQuadrantPoint, Paint paint) {
-        return new Point(-secondQuadrantPoint.x + 2 * mX0, secondQuadrantPoint.y, paint);
+    private PointS1 mirror_2nd_QuadrantPoint(PointS1 secondQuadrantPointS1, Paint paint) {
+        return new PointS1(-secondQuadrantPointS1.x + 2 * mX0, secondQuadrantPointS1.y, paint);
+    }
+
+    private PointS2 mirror_2nd_QuadrantPoint(PointS2 secondQuadrantPointS2) {
+        return new PointS2(-secondQuadrantPointS2.getX() + 2 * mX0, secondQuadrantPointS2.getY());
     }
 
     /**
@@ -310,9 +417,14 @@ public class FirstQuadrantCircleMirrorHelper implements CircleMirrorHelper {
      * x4* = x4
      * y4* = y0 - (y3 - y0) = 2 * y0 - y3
      */
-    private Point mirror_2nd_SemicirclePoint(Point firstSemicirclePoint, Paint paint) {
+    private PointS1 mirror_2nd_SemicirclePoint(PointS1 firstSemicirclePointS1, Paint paint) {
         /** TODO: use the same logic as {@link #mirror_2nd_OctantPoint}*/
-        return new Point(firstSemicirclePoint.x, -firstSemicirclePoint.y + 2 * mY0, paint);
+        return new PointS1(firstSemicirclePointS1.x, -firstSemicirclePointS1.y + 2 * mY0, paint);
+    }
+
+    private PointS2 mirror_2nd_SemicirclePoint(PointS2 firstSemicirclePoint) {
+        /** TODO: use the same logic as {@link #mirror_2nd_OctantPoint}*/
+        return new PointS2(firstSemicirclePoint.getX(), -firstSemicirclePoint.getY() + 2 * mY0);
     }
 
 }

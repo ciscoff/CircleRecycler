@@ -10,7 +10,7 @@ import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import s.yzrlykov.circlerecycler.R
-import s.yzrlykov.circlerecycler.domain.Point
+import s.yzrlykov.circlerecycler.domain.PointS1
 import s.yzrlykov.circlerecycler.domain.Shape
 import s.yzrlykov.circlerecycler.domain.pointcreator.FirstQuadrantCirclePointsCreator
 import s.yzrlykov.circlerecycler.extensions.dimensionPix
@@ -29,7 +29,7 @@ class Activity01CirclePoints : AppCompatActivity() {
     private lateinit var tvLog: TextView
 
     // Список точек
-    private val points = mutableListOf<Point>()
+    private val points = mutableListOf<PointS1>()
 
     // Будет составлять 2/3 от наименьшей стороны экрана
     private var radius = 0
