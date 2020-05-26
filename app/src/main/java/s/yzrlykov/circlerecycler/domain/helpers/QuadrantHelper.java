@@ -3,6 +3,7 @@ package s.yzrlykov.circlerecycler.domain.helpers;
 import android.view.View;
 
 import s.yzrlykov.circlerecycler.domain.PointS1;
+import s.yzrlykov.circlerecycler.domain.PointS2;
 import s.yzrlykov.circlerecycler.domain.ViewData;
 
 /**
@@ -14,15 +15,15 @@ import s.yzrlykov.circlerecycler.domain.ViewData;
  * {@link FirstQuadrantHelper}
  */
 public interface QuadrantHelper {
-    PointS1 findNextViewCenter(ViewData previousViewData, int nextViewHalfViewWidth, int nextViewHalfViewHeight);
+    PointS2 findNextViewCenter(ViewData previousViewData, int nextViewHalfViewWidth, int nextViewHalfViewHeight);
 
-    int getViewCenterPointIndex(PointS1 pointS1);
+    int getViewCenterPointIndex(PointS2 pointS2);
 
-    PointS1 getViewCenterPoint(int newCenterPointIndex);
+    PointS2 getViewCenterPoint(int newCenterPointIndex);
 
     int getNewCenterPointIndex(int newCalculatedIndex);
 
-    PointS1 findPreviousViewCenter(ViewData nextViewData, int previousViewHalfViewHeight);
+    PointS2 findPreviousViewCenter(ViewData nextViewData, int previousViewHalfViewHeight);
 
     boolean isLastLayoutedView(int recyclerHeight, View view);
 

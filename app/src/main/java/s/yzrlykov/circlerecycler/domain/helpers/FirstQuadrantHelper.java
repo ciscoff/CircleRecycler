@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import s.yzrlykov.circlerecycler.domain.PointS1;
+import s.yzrlykov.circlerecycler.domain.PointS2;
 import s.yzrlykov.circlerecycler.domain.ViewData;
 import s.yzrlykov.circlerecycler.domain.pointcreator.FirstQuadrantCirclePointsCreator;
 
@@ -33,8 +34,8 @@ public class FirstQuadrantHelper implements QuadrantHelper {
 
     private static final String TAG = FirstQuadrantHelper.class.getSimpleName();
 
-    private final Map<Integer, PointS1> mCircleIndexPoint;
-    private final Map<PointS1, Integer> mCirclePointIndex;
+    private final Map<Integer, PointS2> mCircleIndexPoint;
+    private final Map<PointS2, Integer> mCirclePointIndex;
 
     private final int mRadius;
 
@@ -135,11 +136,11 @@ public class FirstQuadrantHelper implements QuadrantHelper {
      *     5. If any condition from 3, 4, 5 match then we found a center on the circle for the next view.
      */
     @Override
-    public PointS1 findNextViewCenter(ViewData previousViewData, int nextViewHalfViewWidth, int nextViewHalfViewHeight) {
+    public PointS2 findNextViewCenter(ViewData previousViewData, int nextViewHalfViewWidth, int nextViewHalfViewHeight) {
 
-        PointS1 previousViewCenter = previousViewData.getCenterPoint();
+        PointS2 previousViewCenter = previousViewData.getCenterPoint();
 
-        PointS1 nextViewCenter;
+        PointS2 nextViewCenter;
 
         boolean foundNextViewCenter;
         do {
@@ -178,7 +179,7 @@ public class FirstQuadrantHelper implements QuadrantHelper {
      * 4. We get next point using index
      *
      */
-    private PointS1 getNextViewCenter(PointS1 previousViewCenter) {
+    private PointS2 getNextViewCenter(PointS2 previousViewCenter) {
 
         /** 1. */
         int previousViewCenterPointIndex = mCirclePointIndex.get(previousViewCenter);
@@ -193,13 +194,13 @@ public class FirstQuadrantHelper implements QuadrantHelper {
                 newIndex;
 
         /** 4. */
-        PointS1 nextViewCenter = mCircleIndexPoint.get(nextViewCenterPointIndex);
+        PointS2 nextViewCenter = mCircleIndexPoint.get(nextViewCenterPointIndex);
 
 //        if(SHOW_LOGS) Log.v(TAG, "getNextViewCenter, nextViewCenter " + nextViewCenter);
         return nextViewCenter;
     }
 
-    private PointS1 getPreviousViewCenter(PointS1 nextViewCenter) {
+    private PointS2 getPreviousViewCenter(PointS2 nextViewCenter) {
 
         /** 1. */
         int nextViewCenterPointIndex = mCirclePointIndex.get(nextViewCenter);
@@ -219,12 +220,12 @@ public class FirstQuadrantHelper implements QuadrantHelper {
     }
 
     @Override
-    public int getViewCenterPointIndex(PointS1 pointS1) {
-        return mCirclePointIndex.get(pointS1);
+    public int getViewCenterPointIndex(PointS2 pointS2) {
+        return mCirclePointIndex.get(pointS2);
     }
 
     @Override
-    public PointS1 getViewCenterPoint(int newCenterPointIndex) {
+    public PointS2 getViewCenterPoint(int newCenterPointIndex) {
         return mCircleIndexPoint.get(
                 newCenterPointIndex
         );
@@ -313,11 +314,11 @@ public class FirstQuadrantHelper implements QuadrantHelper {
      *
      */
     @Override
-    public PointS1 findPreviousViewCenter(ViewData nextViewData, int previousViewHalfViewHeight) {
+    public PointS2 findPreviousViewCenter(ViewData nextViewData, int previousViewHalfViewHeight) {
 
-        PointS1 nextViewCenter = nextViewData.getCenterPoint();
+        PointS2 nextViewCenter = nextViewData.getCenterPoint();
 
-        PointS1 previousViewCenter;
+        PointS2 previousViewCenter;
 
         boolean foundNextViewCenter;
         do {

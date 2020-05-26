@@ -29,6 +29,10 @@ public interface CirclePointsCreator {
 
     void fillCirclePointsFirstQuadrant(List<PointS1> circlePointS1s);
 
+    void fillCirclePointsFirstQuadrant(
+            Map<Integer, PointS2> circleIndexPoint,
+            Map<PointS2, Integer> circlePointIndex);
+
     /**
      * Я добавил этот метод, чтобы ограничиться только точками первой четверти
      */

@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import s.yzrlykov.circlerecycler.R
 import s.yzrlykov.circlerecycler.domain.PointS1
+import s.yzrlykov.circlerecycler.domain.PointS2
 import s.yzrlykov.circlerecycler.domain.pointcreator.FirstQuadrantCirclePointsCreator
 import s.yzrlykov.circlerecycler.extensions.dimensionPix
 import kotlin.math.abs
@@ -14,10 +15,14 @@ import kotlin.math.min
 
 class Activity02CirclePoints : AppCompatActivity() {
     private lateinit var circlePointsCreator: FirstQuadrantCirclePointsCreator
-    private lateinit var recyclerView : RecyclerView
+    private lateinit var recyclerView: RecyclerView
 
     // Список точек
     private val points = mutableListOf<PointS1>()
+
+    private val mapIndexPoint = mutableMapOf<Int, PointS2>()
+    private val mapPointIndex = mutableMapOf<PointS2, Int>()
+
 
     // Центр окружности
     private val x0 = 0f
@@ -30,7 +35,7 @@ class Activity02CirclePoints : AppCompatActivity() {
             field = abs(value.toFloat() * 0.66).toInt()
         }
 
-    private var dimen = 0
+    private var dimenListItem = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +60,7 @@ class Activity02CirclePoints : AppCompatActivity() {
             resources.displayMetrics.heightPixels
         )
 
-        dimen = dimensionPix(R.dimen.list_item_dimen)
+        dimenListItem = dimensionPix(R.dimen.list_item_dimen)
     }
 
     private fun warmUp() {
@@ -69,18 +74,22 @@ class Activity02CirclePoints : AppCompatActivity() {
         createCirclePoints()
     }
 
+    /**
+     * Создать "массивы" точек периметра окружности
+     */
     private fun createCirclePoints() {
-            points.clear()
-            circlePointsCreator.fillCirclePointsFirstQuadrant(points, paint)
+        mapIndexPoint.clear()
+        mapPointIndex.clear()
+        circlePointsCreator.fillCirclePoints(mapIndexPoint, mapPointIndex)
     }
 
     private fun initRecyclerView(adapterS02: AdapterS02) {
 
         recyclerView.apply {
-//            setHasFixedSize(true)
+            //            setHasFixedSize(true)
 //            itemAnimator = DefaultItemAnimator()
             adapter = adapterS02
-            layoutManager = LayoutManagerS02(radius, dimen, points)
+            layoutManager = LayoutManagerS02(radius, dimenListItem, 0, 0)
         }
     }
 

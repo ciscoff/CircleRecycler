@@ -4,55 +4,79 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import s.yzrlykov.circlerecycler.domain.PointS1
+import s.yzrlykov.circlerecycler.domain.PointS2
+import s.yzrlykov.circlerecycler.domain.ViewData
+import s.yzrlykov.circlerecycler.domain.helpers.FirstQuadrantHelper
 
 class LayoutManagerS02(
     private val radius: Int,
     private val dimen: Int,
-    private val pointS1s: List<PointS1>
+    private val x0: Int = 0,
+    private val y0: Int = 0
 ) : RecyclerView.LayoutManager() {
+
+    /**
+     * Этот хелпер при инициализации самостоятельно сгенерит точки периметра окружности
+     */
+    private val quadrantHelper = FirstQuadrantHelper(radius, x0, y0)
 
     override fun onLayoutChildren(recycler: RecyclerView.Recycler, state: RecyclerView.State?) {
         fillDown(recycler)
     }
 
-    private fun fillDown(recycler : RecyclerView.Recycler) {
+    private fun fillDown(recycler: RecyclerView.Recycler) {
         var position = 0
+        var viewTop = 0
         var fillDown = true
-
-        var viewTop : Int
-        var viewLeft : Int
-        val height = pointS1s.last().y + dimen/2
 
         // Количество элементов в адаптере
         val itemCount = getItemCount()
+
+        // Стартовая точка, от которой начнет раскладывать.
+        // Её центр имеет координаты (R, 0)
+        val viewData = ViewData(
+            0, 0, 0, 0,
+            quadrantHelper.getViewCenterPoint(0)
+        )
+
+        var firstVisiblePosition = 0
+        var lastVisiblePosition = 0
 
         val widthSpec = View.MeasureSpec.makeMeasureSpec(dimen, View.MeasureSpec.EXACTLY)
         val heightSpec = View.MeasureSpec.makeMeasureSpec(dimen, View.MeasureSpec.EXACTLY)
 
         while (fillDown && position < itemCount) {
-
-            // Координата Y (верхней границы View) вычисляется просто
-            viewTop = position * dimen
-            // Координата X корректируется "по окружности". Сначала находим точку
-            // центра View, а затем смещаем левее на пол ширины. Получаем координату
-            // левой границы View.
-            viewLeft = pointS1s[viewTop + dimen/2].x - dimen/2
-
-            val view = recycler.getViewForPosition(position)
-
+            val view = recycler.getViewForPosition(firstVisiblePosition)
             addView(view)
+
             measureChildWithInsets(view, widthSpec, heightSpec)
 
-            layoutDecorated(view,
-                viewLeft,
-                viewTop,
-                viewLeft + dimen,
-                viewTop+ dimen)
+            val viewCenter = quadrantHelper.findNextViewCenter(viewData, dimen / 2, dimen / 2)
+            performLayout(view, viewCenter, dimen / 2, dimen / 2)
+            viewData.updateData(view, viewCenter)
 
             position++
-            viewTop = position * dimen
-            fillDown = viewTop <= height && position * dimen < pointS1s.lastIndex
+            viewTop = viewData.viewBottom
+            fillDown = viewTop <= height
         }
+    }
+
+    private fun performLayout(
+        view: View,
+        viewCenter: PointS2,
+        halfViewWidth: Int,
+        halfViewHeight: Int
+    ) {
+
+        var (left, top, bottom, right) = listOf(0, 0, 0, 0)
+
+        top = viewCenter.getY() - halfViewHeight
+        bottom = viewCenter.getY() + halfViewHeight
+
+        left = viewCenter.getX() - halfViewWidth
+        right = viewCenter.getX() + halfViewWidth
+
+        layoutDecorated(view, left, top, right, bottom)
     }
 
     /**

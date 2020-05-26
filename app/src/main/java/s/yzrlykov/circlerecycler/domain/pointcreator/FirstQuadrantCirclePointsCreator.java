@@ -59,25 +59,23 @@ public class FirstQuadrantCirclePointsCreator implements CirclePointsCreator {
 
     /**
      * This method is based on "Midpoint circle algorithm."
-     *
-     *  We use three steps:
-     *
-     *  1. Create 1 octant of a circle.
-     *  2. Mirror the created pointS1s for the 2nd octant
-     *  At this stage we have pointS1s for 1 quadrant of a circle
-     *
-     *  3. Mirror 2nd quadrant pointS1s using pointS1s from 1 quadrant
-     *  At this stage we have pointS1s for 1 semicircle
-     *
-     *  4. Mirror 2nd semicircle pointS1s using pointS1s from 1 semicircle
-     *
+     * <p>
+     * We use three steps:
+     * <p>
+     * 1. Create 1 octant of a circle.
+     * 2. Mirror the created pointS1s for the 2nd octant
+     * At this stage we have pointS1s for 1 quadrant of a circle
+     * <p>
+     * 3. Mirror 2nd quadrant pointS1s using pointS1s from 1 quadrant
+     * At this stage we have pointS1s for 1 semicircle
+     * <p>
+     * 4. Mirror 2nd semicircle pointS1s using pointS1s from 1 semicircle
      */
 
     @Override
     public void fillCirclePoints(
             Map<Integer, PointS2> circleIndexPoint,
-            Map<PointS2, Integer> circlePointIndex)
-    {
+            Map<PointS2, Integer> circlePointIndex) {
 
         createFirstOctant(circleIndexPoint, circlePointIndex);
 
@@ -97,8 +95,19 @@ public class FirstQuadrantCirclePointsCreator implements CirclePointsCreator {
                 circleIndexPoint,
                 circlePointIndex
         );
-
     }
+
+    @Override
+    public void fillCirclePointsFirstQuadrant(Map<Integer, PointS2> circleIndexPoint, Map<PointS2, Integer> circlePointIndex) {
+
+        createFirstOctant(circleIndexPoint, circlePointIndex);
+
+        /** at this stage "circleIndexPoint" and "circlePointIndex" contains only the pointS1s from first octant*/
+        mCircleMirrorHelper.mirror_2nd_Octant(
+                circleIndexPoint,
+                circlePointIndex);
+    }
+
 
     /**
      * This method is based on "Midpoint circle algorithm."
@@ -240,12 +249,12 @@ public class FirstQuadrantCirclePointsCreator implements CirclePointsCreator {
         int x = mRadius;
         int y = 0;
         int decisionOver2 = 1 - x;   // Decision criterion divided by 2 evaluated at x=r, y=0
-        while(y <= x){
+        while (y <= x) {
 
             createPointS2(x + mX0, y + mY0, circleIndexPoint, circlePointIndex);
 
             y++;
-            if (decisionOver2<=0){
+            if (decisionOver2 <= 0) {
                 decisionOver2 += 2 * y + 1;   // Change in decision criterion for y -> y+1
             } else {
                 x--;
