@@ -12,7 +12,7 @@ import s.yzrlykov.circlerecycler.extensions.dimensionPix
 import kotlin.math.abs
 import kotlin.math.min
 
-class Activity02CirclePoints : AppCompatActivity() {
+class Activity03CirclePoints : AppCompatActivity() {
     private lateinit var circlePointsCreator: FirstQuadrantCirclePointsCreator
     private lateinit var recyclerView: RecyclerView
 
