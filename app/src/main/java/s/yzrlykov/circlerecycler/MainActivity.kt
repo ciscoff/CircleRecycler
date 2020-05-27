@@ -7,13 +7,17 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import s.yzrlykov.circlerecycler.stages.s01.Activity01CirclePoints
+import s.yzrlykov.circlerecycler.stages.s02.Activity02CirclePoints
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var scrollView: NestedScrollView
     lateinit var cardsContainer: LinearLayout
 
-    private val stages = mapOf(Activity01CirclePoints::class.java to R.string.menu_01_circle_points)
+    private val stages = mapOf(
+        Activity01CirclePoints::class.java to R.string.menu_01_circle_points,
+        Activity02CirclePoints::class.java to R.string.menu_02_vertical_scroll
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

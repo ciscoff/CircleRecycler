@@ -6,4 +6,7 @@
 
     <color name="color_card_stroke">@android:color/darker_gray</color>
     <color name="quadrant_fill_color">#b2ebf2</color>
+
+    <color name="background_even_item">#0097a7</color>
+    <color name="background_odd_item">#ff8f00</color>
 </resources>

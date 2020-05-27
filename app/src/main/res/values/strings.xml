@@ -2,9 +2,10 @@
     <string name="app_name">CircleRecycler</string>
 
     <!-- Menus -->
-    <string name="menu_01_circle_points">Create Circle Points</string>
+    <string name="menu_01_circle_points">Circle Points</string>
+    <string name="menu_02_vertical_scroll">Vertical Scroll</string>
 
-<!--    Buttons -->
+    <!--    Buttons -->
     <string name="button_draw">Draw</string>
 
 <!--    Hint -->
