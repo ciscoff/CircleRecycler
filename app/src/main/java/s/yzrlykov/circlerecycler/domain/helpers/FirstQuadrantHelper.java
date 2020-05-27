@@ -134,6 +134,15 @@ public class FirstQuadrantHelper implements QuadrantHelper {
      *                  +y V
      *
      *     5. If any condition from 3, 4, 5 match then we found a center on the circle for the next view.
+     *
+     *
+     * Смысл алгоритма следующий:
+     * На вход прилетает previousViewData с координатами сторон предыдущей View, а также "размеры"
+     * следующей вью. Находим в массиве точек индекс точки центра предыдущей вью. Далее так:
+     * инкрементим индекс, извлекаем из массива следующую по индексу точку. Принимаем её за центр
+     * следующей вью и проверяем будет ли эта вью, находясь в этом центре и со своими размерами,
+     * удовлетворять одному из условий описанных выше. Если хоть одно условие выполняется, то
+     * новый центр найден. Иначе снова инкрементим индекс и т.д.
      */
     @Override
     public PointS2 findNextViewCenter(ViewData previousViewData, int nextViewHalfViewWidth, int nextViewHalfViewHeight) {
@@ -196,7 +205,6 @@ public class FirstQuadrantHelper implements QuadrantHelper {
         /** 4. */
         PointS2 nextViewCenter = mCircleIndexPoint.get(nextViewCenterPointIndex);
 
-//        if(SHOW_LOGS) Log.v(TAG, "getNextViewCenter, nextViewCenter " + nextViewCenter);
         return nextViewCenter;
     }
 

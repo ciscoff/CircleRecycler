@@ -3,7 +3,6 @@ package s.yzrlykov.circlerecycler.stages.s02
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import s.yzrlykov.circlerecycler.domain.PointS1
 import s.yzrlykov.circlerecycler.domain.PointS2
 import s.yzrlykov.circlerecycler.domain.ViewData
 import s.yzrlykov.circlerecycler.domain.helpers.FirstQuadrantHelper
@@ -30,7 +29,7 @@ class LayoutManagerS02(
         var fillDown = true
 
         // Количество элементов в адаптере
-        val itemCount = getItemCount()
+        val itemQty = itemCount
 
         // Стартовая точка, от которой начнет раскладывать.
         // Её центр имеет координаты (R, 0)
@@ -39,16 +38,13 @@ class LayoutManagerS02(
             quadrantHelper.getViewCenterPoint(0)
         )
 
-        var firstVisiblePosition = 0
-        var lastVisiblePosition = 0
-
         val widthSpec = View.MeasureSpec.makeMeasureSpec(dimen, View.MeasureSpec.EXACTLY)
         val heightSpec = View.MeasureSpec.makeMeasureSpec(dimen, View.MeasureSpec.EXACTLY)
 
-        while (fillDown && position < itemCount) {
-            val view = recycler.getViewForPosition(firstVisiblePosition)
-            addView(view)
+        while (fillDown && position < itemQty) {
+            val view = recycler.getViewForPosition(position)
 
+            addView(view)
             measureChildWithInsets(view, widthSpec, heightSpec)
 
             val viewCenter = quadrantHelper.findNextViewCenter(viewData, dimen / 2, dimen / 2)
