@@ -1,4 +1,4 @@
-package s.yzrlykov.circlerecycler.stages.s02
+package s.yzrlykov.circlerecycler.stages.s03
 
 import android.graphics.Paint
 import android.os.Bundle
@@ -35,12 +35,12 @@ class Activity02CirclePoints : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_02_vertical_scroll)
+        setContentView(R.layout.activity_03_vertical_scroll)
 
         initMetrics()
         findViews()
         warmUp()
-        initRecyclerView(AdapterS02(resources.getStringArray(R.array.list_item_titles).toList()))
+        initRecyclerView(AdapterS03(resources.getStringArray(R.array.list_item_titles).toList()))
     }
 
     private fun findViews() {
@@ -79,13 +79,13 @@ class Activity02CirclePoints : AppCompatActivity() {
         circlePointsCreator.fillCirclePoints(mapIndexPoint, mapPointIndex)
     }
 
-    private fun initRecyclerView(adapterS02: AdapterS02) {
+    private fun initRecyclerView(adapterS03: AdapterS03) {
 
         recyclerView.apply {
             //            setHasFixedSize(true)
 //            itemAnimator = DefaultItemAnimator()
-            adapter = adapterS02
-            layoutManager = LayoutManagerS02(radius, dimenListItem, 0, 0)
+            adapter = adapterS03
+            layoutManager = LayoutManagerS03(radius, dimenListItem, 0, 0)
         }
     }
 
