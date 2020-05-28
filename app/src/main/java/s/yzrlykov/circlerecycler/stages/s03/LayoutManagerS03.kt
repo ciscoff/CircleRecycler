@@ -1,6 +1,7 @@
 package s.yzrlykov.circlerecycler.stages.s03
 
 import android.graphics.Rect
+import android.util.SparseArray
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import s.yzrlykov.circlerecycler.domain.PointS2
@@ -13,6 +14,11 @@ class LayoutManagerS03(
     private val x0: Int = 0,
     private val y0: Int = 0
 ) : RecyclerView.LayoutManager() {
+
+    /**
+     * Кэш View для работы со скролом
+     */
+    private val viewCache = SparseArray<View>()
 
     /**
      * Этот хелпер при инициализации самостоятельно сгенерит точки периметра окружности
@@ -55,6 +61,74 @@ class LayoutManagerS03(
             viewTop = viewData.viewBottom
             fillDown = viewTop <= height
         }
+    }
+
+    override fun scrollVerticallyBy(
+        dy: Int,
+        recycler: RecyclerView.Recycler,
+        state: RecyclerView.State?
+    ): Int {
+        val delta = calculateVerticalScrollOffset(dy)
+        offsetChildrenVertical(-delta)
+//        fill(recycler)
+        return delta
+    }
+
+    /**
+     * Вычислить реальный офсет прокрутки
+     *
+     * Вот важно по поводу layout
+     * https://stackoverflow.com/questions/33196553/android-difference-between-offsettopandbottom-settranslatey
+     *
+     *
+     */
+    private fun calculateVerticalScrollOffset(dy : Int) : Int {
+
+        // Количество приаттаченных элементов к RecyclerView (Наверное количество видимых элементов)
+        val childCount = childCount
+        // Количество элементов в адаптере
+        val itemCount = itemCount
+
+        if (childCount == 0) {
+            return 0
+        }
+
+        val topView = getChildAt(0)
+        val bottomView = getChildAt(childCount - 1)
+
+        // Случай, когда все вьюшки адаптера поместились на экране
+        topView?.let{ tv ->
+            bottomView?.let { bv ->
+
+                if(getDecoratedTop(tv) >= 0 &&
+                    getDecoratedBottom(bv) <= height &&
+                    getDecoratedLeft(bv) >=0) {
+                    return 0
+                }
+            }
+        }
+
+        var delta = 0
+
+        // Если контент уезжает вниз, то есть прокручиваем к верхней части контента
+        if(dy < 0) {
+
+            val firstVisibleView = getChildAt(0)!!
+            val firstVisibleViewAdapterPos = getPosition(firstVisibleView)
+
+
+
+        }
+        else {
+
+        }
+
+
+
+
+
+
+        return 0
     }
 
     private fun performLayout(
@@ -123,6 +197,22 @@ class LayoutManagerS03(
             )
         }
         return spec
+    }
+
+    /**
+     * Первая сверху вьюха, которая полностью видна
+     */
+    private fun getAnchorView(): View? {
+
+        (0 until childCount).forEach { i ->
+            getChildAt(i)?.let { view ->
+                if (getDecoratedTop(view) >= 0 && getDecoratedBottom(view) <= height) {
+                    return view
+                }
+            }
+        }
+
+        return null
     }
 
     override fun generateDefaultLayoutParams(): RecyclerView.LayoutParams {
