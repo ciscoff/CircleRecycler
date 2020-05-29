@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="shapes_qty">7</integer>
+
+    <integer name="seek_max">200</integer>
+    <integer name="seek_init">100</integer>
 </resources>

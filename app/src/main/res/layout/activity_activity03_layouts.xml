@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".stages.s03_1.Activity03Layouts">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/tv_tv"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="@color/background_even_item"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/text_hello"
+            android:textColor="@android:color/white" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/seek_bar_parent_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:text="@string/offset_lr" />
+
+        <SeekBar
+            android:id="@+id/seek_bar_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:max="@integer/seek_max"
+            android:progress="@integer/seek_init"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/seek_bar_parent_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:text="@string/offset_tb" />
+
+        <SeekBar
+            android:id="@+id/seek_bar_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:max="@integer/seek_max"
+            android:progress="@integer/seek_init"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/seek_bar_parent_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:text="@string/translation_x" />
+
+        <SeekBar
+            android:id="@+id/seek_bar_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:max="@integer/seek_max"
+            android:progress="@integer/seek_init"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/seek_bar_parent_4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:text="@string/translation_y" />
+
+        <SeekBar
+            android:id="@+id/seek_bar_4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:max="@integer/seek_max"
+            android:progress="@integer/seek_init"/>
+    </LinearLayout>
+
+</LinearLayout>

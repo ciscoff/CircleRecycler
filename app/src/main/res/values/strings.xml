@@ -5,10 +5,21 @@
     <string name="menu_01_circle_points">01. Circle Points</string>
     <string name="menu_02_vertical_layout">02. Vertical Layout</string>
     <string name="menu_03_vertical_scroll">03. Vertical Scroll</string>
+    <string name="menu_03_offsets_edu">03.1 Moving View</string>
+
 
     <!--    Buttons -->
     <string name="button_draw">Draw</string>
 
-<!--    Hint -->
+    <string name="text_hello">HELLO</string>
+
+    <!--    Hint -->
     <string name="log_hint">Log here:</string>
+
+    <string name="offset_lr">offsetLeftAndRight</string>
+    <string name="offset_tb">offsetTopAndBottom</string>
+
+    <string name="translation_x">setTranslationX</string>
+    <string name="translation_y">setTranslationY</string>
+
 </resources>

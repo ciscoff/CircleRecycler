@@ -9,6 +9,7 @@ import androidx.core.widget.NestedScrollView
 import s.yzrlykov.circlerecycler.stages.s01.Activity01CirclePoints
 import s.yzrlykov.circlerecycler.stages.s02.Activity02CirclePoints
 import s.yzrlykov.circlerecycler.stages.s03.Activity03CirclePoints
+import s.yzrlykov.circlerecycler.stages.s03_1.Activity03Layouts
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,7 +19,8 @@ class MainActivity : AppCompatActivity() {
     private val stages = mapOf(
         Activity01CirclePoints::class.java to R.string.menu_01_circle_points,
         Activity02CirclePoints::class.java to R.string.menu_02_vertical_layout,
-        Activity03CirclePoints::class.java to R.string.menu_03_vertical_scroll
+        Activity03CirclePoints::class.java to R.string.menu_03_vertical_scroll,
+        Activity03Layouts::class.java to R.string.menu_03_offsets_edu
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
