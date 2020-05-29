@@ -4,8 +4,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.SeekBar
 import android.widget.TextView
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import s.yzrlykov.circlerecycler.R
 import s.yzrlykov.circlerecycler.extensions.px
+import s.yzrlykov.circlerecycler.logIt
 
 class Activity03Layouts : AppCompatActivity() {
 
@@ -15,6 +18,7 @@ class Activity03Layouts : AppCompatActivity() {
     private lateinit var seekBar4: SeekBar
 
     private lateinit var textView: TextView
+    private lateinit var textConsole : TextView
 
     private var seekMax = 0
     private var seekInit = 0
@@ -38,6 +42,7 @@ class Activity03Layouts : AppCompatActivity() {
         seekBar3 = findViewById(R.id.seek_bar_3)
         seekBar4 = findViewById(R.id.seek_bar_4)
         textView = findViewById(R.id.tv_tv)
+        textConsole = findViewById(R.id.tv_console)
     }
 
     private fun initViews() {
@@ -45,9 +50,17 @@ class Activity03Layouts : AppCompatActivity() {
         seekBar2.setOnSeekBarChangeListener(seekChangeListener)
         seekBar3.setOnSeekBarChangeListener(seekChangeListener)
         seekBar4.setOnSeekBarChangeListener(seekChangeListener)
+
+        (textView as EventObservable<String>)
+            .connectTo()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(::eventObserver)
     }
 
-
+    private fun eventObserver(event : String) {
+        textConsole.text = event
+    }
 
     /**
      * offsetLeftAndRight/offsetTopAndBottom задают смещение от текущей позиции View
@@ -59,6 +72,15 @@ class Activity03Layouts : AppCompatActivity() {
      * элемента в layout'е
      *
      * Все рассмотренные смещения - знаковые.
+     *
+     * Как выяснилось - при перемещении View таким образом, у него не вызывается ни onMeasure ни
+     * onLayout. Странно. Вроде положение меняется, но ничего не происходит.
+     * И маргины тоже не меняются при перемещении.
+     *
+     * В документации сказано, что onLayout должно инициироваться из родителя, если с ним что-то
+     * происходит и ЕГО СОБСТВЕННЫЕ размеры и положение зависят от дочерних элементов (например
+     * у родителя стоит wrap_content). А если родителю пох перемещения его детей, то он у них
+     * ничего такого не вызывает.
      */
     private val seekChangeListener = object : SeekBar.OnSeekBarChangeListener {
         override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
