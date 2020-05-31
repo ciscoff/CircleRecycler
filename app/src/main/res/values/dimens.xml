@@ -2,4 +2,5 @@
 <resources>
     <dimen name="oval_shape_diameter">20dp</dimen>
     <dimen name="list_item_dimen">60dp</dimen>
+    <dimen name="custom_text_view_size_03">100dp</dimen>
 </resources>

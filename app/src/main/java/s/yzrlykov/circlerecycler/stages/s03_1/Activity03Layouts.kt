@@ -84,6 +84,7 @@ class Activity03Layouts : AppCompatActivity() {
      */
     private val seekChangeListener = object : SeekBar.OnSeekBarChangeListener {
         override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+
             when (seekBar.id) {
                 R.id.seek_bar_1 -> {
                     textView.offsetLeftAndRight((progress - lastProgress).px)
@@ -102,6 +103,32 @@ class Activity03Layouts : AppCompatActivity() {
                     textView.translationY = (progress - seekInit).px.toFloat()
                 }
             }
+
+            /**
+             * Почитать:
+             * https://bit.ly/2XKlW69
+             * Посмотреть:
+             * https://www.youtube.com/watch?v=86p1GPEv_fY&t=5m42s
+             *
+             * При движении seekBar'a мы меняем различные смещения у textView и элемент
+             * передвигается (изменяются его X/Y), НО при этом не вызывается ни один из,
+             * методов onMeasure onLayout, onDraw.
+             *
+             * - onMeasure не вызывается, потому что родительский компонент не меняется и ему
+             *   не нужно переизмерять вложенные элементы.
+             * - onLayout не вызывается по той же причине: родительский элемент на том же месте
+             * - onDraw потому что ВНУТРИ textView ничего не надо перерисовывать.
+             *
+             * Поэтому нужно принудительно перерисовать textView через invalidate. В этот
+             * момент он прочитает новые значения X/Y и выведет на экран.
+             *
+             *
+             * view.requestLayout() - инициирует запрос ВВЕРХ к родителю о необходимости
+             *   выполнить layout. Родитель ставит в очередь UI-потока задание на layout
+             *   (это будет measure + layout).
+             */
+//            textView.requestLayout()
+//            textView.invalidate()
         }
 
         override fun onStartTrackingTouch(seekBar: SeekBar?) {

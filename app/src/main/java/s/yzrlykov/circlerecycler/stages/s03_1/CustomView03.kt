@@ -1,32 +1,45 @@
 package s.yzrlykov.circlerecycler.stages.s03_1
 
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import android.widget.TextView
 import io.reactivex.Observable
-import io.reactivex.functions.BiFunction
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.functions.Function3
+import io.reactivex.subjects.BehaviorSubject
+import s.yzrlykov.circlerecycler.extensions.dp
 
 class CustomView03 @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : TextView(context, attrs, defStyleAttr) , EventObservable<String>{
+) : TextView(context, attrs, defStyleAttr), EventObservable<String> {
 
     private var countMeasure = 1
     private var countLayout = 1
+    private var countDraw = 1
 
-    private val measureObs = PublishSubject.create<String>()
-    private val layoutObs = PublishSubject.create<String>()
+    private val measureObs = BehaviorSubject.create<String>()
+    private val layoutObs = BehaviorSubject.create<String>()
+    private val drawObs = BehaviorSubject.create<String>()
 
     private val eventsObs = Observable.combineLatest(
         measureObs,
         layoutObs,
-        BiFunction { measure: String, layout: String ->
-            "${measure}, ${layout}"
+        drawObs,
+        Function3<String, String, String, String> { measure, layout, position ->
+            "${measure}\n${layout}\n${position}"
         }
     )
+
+    private val paint = Paint().apply {
+        color = Color.WHITE
+        textSize = 30f
+        textAlign = Paint.Align.CENTER
+    }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
@@ -38,12 +51,27 @@ class CustomView03 @JvmOverloads constructor(
         super.onLayout(changed, left, top, right, bottom)
 
         val params = layoutParams as FrameLayout.LayoutParams
+        val message =
+            "layout: ${countLayout++}\n  topMargin: ${params.topMargin}, leftMargin: ${params.leftMargin}\n  x = $left, y = $top"
 
-        val message = "layout: ${countLayout++}, topMargin: ${params.topMargin}, leftMargin: ${params.leftMargin}"
         layoutObs.onNext(message)
     }
 
     override fun connectTo(): Observable<String> {
         return eventsObs
+    }
+
+    override fun onDraw(canvas: Canvas?) {
+        drawObs.onNext("draw: ${countDraw++}")
+
+        // Вот так не надо !
+//        text = "x = $x\ny = $y"
+
+        // Вот так надо:
+        // Выравниваем текст горизонтально по центру благодаря Paint.Align.CENTER
+        canvas?.let{
+            it.drawText("x = $x", (width / 2).toFloat(), (height / 3).toFloat(), paint)
+            it.drawText("y = $y", (width / 2).toFloat(), (height / 3) * 2f, paint)
+        }
     }
 }
