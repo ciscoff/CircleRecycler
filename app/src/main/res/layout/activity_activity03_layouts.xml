@@ -6,16 +6,24 @@
     android:orientation="vertical"
     tools:context=".stages.s03_1.Activity03Layouts">
 
-    <FrameLayout
+    <s.yzrlykov.circlerecycler.stages.s03_1.CustomFrameLayout
+        android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
         <TextView
-            android:id="@+id/tv_console"
-            android:layout_width="match_parent"
+            android:id="@+id/tv_console_1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="top" />
+            android:layout_gravity="top|start" />
+
+        <TextView
+            android:id="@+id/tv_console_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end" />
+
 
         <s.yzrlykov.circlerecycler.stages.s03_1.CustomView03
             android:id="@+id/tv_tv"
@@ -26,7 +34,7 @@
             android:gravity="center"
             android:text="@string/text_hello"
             android:textColor="@android:color/white" />
-    </FrameLayout>
+    </s.yzrlykov.circlerecycler.stages.s03_1.CustomFrameLayout>
 
     <LinearLayout
         android:id="@+id/seek_bar_parent_1"

@@ -10,7 +10,7 @@ import android.widget.TextView
 import io.reactivex.Observable
 import io.reactivex.functions.Function3
 import io.reactivex.subjects.BehaviorSubject
-import s.yzrlykov.circlerecycler.extensions.dp
+import io.reactivex.subjects.PublishSubject
 
 class CustomView03 @JvmOverloads constructor(
     context: Context,
@@ -26,11 +26,11 @@ class CustomView03 @JvmOverloads constructor(
     private val layoutObs = BehaviorSubject.create<String>()
     private val drawObs = BehaviorSubject.create<String>()
 
-    private val eventsObs = Observable.combineLatest(
+    private val combinedObs = Observable.combineLatest(
         measureObs,
         layoutObs,
         drawObs,
-        Function3<String, String, String, String> { measure, layout, position ->
+        Function3 { measure: String, layout: String, position: String ->
             "${measure}\n${layout}\n${position}"
         }
     )
@@ -52,13 +52,13 @@ class CustomView03 @JvmOverloads constructor(
 
         val params = layoutParams as FrameLayout.LayoutParams
         val message =
-            "layout: ${countLayout++}\n  topMargin: ${params.topMargin}, leftMargin: ${params.leftMargin}\n  x = $left, y = $top"
+            "layout: ${countLayout++}\n  topMargin: ${params.topMargin}\n  leftMargin: ${params.leftMargin}\n  x = $left, y = $top"
 
         layoutObs.onNext(message)
     }
 
     override fun connectTo(): Observable<String> {
-        return eventsObs
+        return combinedObs
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -69,7 +69,7 @@ class CustomView03 @JvmOverloads constructor(
 
         // Вот так надо:
         // Выравниваем текст горизонтально по центру благодаря Paint.Align.CENTER
-        canvas?.let{
+        canvas?.let {
             it.drawText("x = $x", (width / 2).toFloat(), (height / 3).toFloat(), paint)
             it.drawText("y = $y", (width / 2).toFloat(), (height / 3) * 2f, paint)
         }

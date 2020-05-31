@@ -2,13 +2,13 @@ package s.yzrlykov.circlerecycler.stages.s03_1
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.FrameLayout
 import android.widget.SeekBar
 import android.widget.TextView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import s.yzrlykov.circlerecycler.R
 import s.yzrlykov.circlerecycler.extensions.px
-import s.yzrlykov.circlerecycler.logIt
 
 class Activity03Layouts : AppCompatActivity() {
 
@@ -18,7 +18,9 @@ class Activity03Layouts : AppCompatActivity() {
     private lateinit var seekBar4: SeekBar
 
     private lateinit var textView: TextView
-    private lateinit var textConsole : TextView
+    private lateinit var textConsole1 : TextView
+    private lateinit var textConsole2 : TextView
+    private lateinit var frameLayout : FrameLayout
 
     private var seekMax = 0
     private var seekInit = 0
@@ -42,7 +44,9 @@ class Activity03Layouts : AppCompatActivity() {
         seekBar3 = findViewById(R.id.seek_bar_3)
         seekBar4 = findViewById(R.id.seek_bar_4)
         textView = findViewById(R.id.tv_tv)
-        textConsole = findViewById(R.id.tv_console)
+        frameLayout = findViewById(R.id.frame_layout)
+        textConsole1 = findViewById(R.id.tv_console_1)
+        textConsole2 = findViewById(R.id.tv_console_2)
     }
 
     private fun initViews() {
@@ -55,11 +59,21 @@ class Activity03Layouts : AppCompatActivity() {
             .connectTo()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(::eventObserver)
+            .subscribe(::childEventObserver)
+
+        (frameLayout as EventObservable<String>)
+            .connectTo()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(::parentEventObserver)
     }
 
-    private fun eventObserver(event : String) {
-        textConsole.text = event
+    private fun childEventObserver(event : String) {
+        textConsole1.text = event
+    }
+
+    private fun parentEventObserver(event : String) {
+        textConsole2.text = event
     }
 
     /**
@@ -128,7 +142,7 @@ class Activity03Layouts : AppCompatActivity() {
              *   (это будет measure + layout).
              */
 //            textView.requestLayout()
-//            textView.invalidate()
+            textView.invalidate()
         }
 
         override fun onStartTrackingTouch(seekBar: SeekBar?) {
