@@ -87,6 +87,10 @@ class Activity03Layouts : AppCompatActivity() {
      *
      * Все рассмотренные смещения - знаковые.
      *
+     * Важный момент: изменения, сделанные с помощью offsetLeftAndRight/offsetTopAndBottom
+     * "стираются" во время очередного прохода layout. В то время как изменения сделанные с помощью
+     * translationX/translationY как бы "добавляются" к результатам работы прохода layout.
+     *
      * Как выяснилось - при перемещении View таким образом, у него не вызывается ни onMeasure ни
      * onLayout. Странно. Вроде положение меняется, но ничего не происходит.
      * И маргины тоже не меняются при перемещении.
@@ -121,6 +125,7 @@ class Activity03Layouts : AppCompatActivity() {
             /**
              * Почитать:
              * https://bit.ly/2XKlW69
+             * https://stackoverflow.com/questions/33196553/android-difference-between-offsettopandbottom-settranslatey/45351424
              * Посмотреть:
              * https://www.youtube.com/watch?v=86p1GPEv_fY&t=5m42s
              *
@@ -142,7 +147,7 @@ class Activity03Layouts : AppCompatActivity() {
              *   (это будет measure + layout).
              */
 //            textView.requestLayout()
-            textView.invalidate()
+//            textView.invalidate()
         }
 
         override fun onStartTrackingTouch(seekBar: SeekBar?) {

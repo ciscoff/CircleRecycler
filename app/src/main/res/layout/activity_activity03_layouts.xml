@@ -24,16 +24,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top|end" />
 
-
         <s.yzrlykov.circlerecycler.stages.s03_1.CustomView03
             android:id="@+id/tv_tv"
             android:layout_width="@dimen/custom_text_view_size_03"
             android:layout_height="@dimen/custom_text_view_size_03"
             android:layout_gravity="center"
-            android:background="@color/background_even_item"
             android:gravity="center"
-            android:text="@string/text_hello"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            tools:text="@string/text_hello" />
     </s.yzrlykov.circlerecycler.stages.s03_1.CustomFrameLayout>
 
     <LinearLayout

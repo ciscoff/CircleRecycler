@@ -31,7 +31,7 @@ class CustomView03 @JvmOverloads constructor(
         layoutObs,
         drawObs,
         Function3 { measure: String, layout: String, position: String ->
-            "${measure}\n${layout}\n${position}"
+            "Child:\n${measure}\n${layout}\n${position}"
         }
     )
 
@@ -43,26 +43,26 @@ class CustomView03 @JvmOverloads constructor(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-
-        measureObs.onNext("measure: ${countMeasure++}")
+        measureObs.onNext("measure: ${++countMeasure}")
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        super.onLayout(changed, left, top, right, bottom)
+
 
         val params = layoutParams as FrameLayout.LayoutParams
         val message =
-            "layout: ${countLayout++}\n  topMargin: ${params.topMargin}\n  leftMargin: ${params.leftMargin}\n  x = $left, y = $top"
+            "layout: ${++countLayout}\n  topMargin: ${params.topMargin}\n  leftMargin: ${params.leftMargin}\n  left = $left (and x = $x)\n  top = $top (and y = $y)"
 
         layoutObs.onNext(message)
-    }
 
-    override fun connectTo(): Observable<String> {
-        return combinedObs
+//        super.onLayout(changed, left, top, right, bottom)
     }
 
     override fun onDraw(canvas: Canvas?) {
-        drawObs.onNext("draw: ${countDraw++}")
+        drawObs.onNext("draw: ${++countDraw}")
+
+        // Рисуем фон
+        canvas?.drawARGB(255, 0, 151, 167)
 
         // Вот так не надо !
 //        text = "x = $x\ny = $y"
@@ -73,5 +73,9 @@ class CustomView03 @JvmOverloads constructor(
             it.drawText("x = $x", (width / 2).toFloat(), (height / 3).toFloat(), paint)
             it.drawText("y = $y", (width / 2).toFloat(), (height / 3) * 2f, paint)
         }
+    }
+
+    override fun connectTo(): Observable<String> {
+        return combinedObs
     }
 }
