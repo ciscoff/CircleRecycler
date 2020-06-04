@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
 import io.reactivex.Observable
@@ -16,7 +17,7 @@ class CustomView03 @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : TextView(context, attrs, defStyleAttr), EventObservable<String> {
+) : View(context, attrs, defStyleAttr), EventObservable<String> {
 
     private var countMeasure = 1
     private var countLayout = 1
@@ -55,11 +56,11 @@ class CustomView03 @JvmOverloads constructor(
 
         layoutObs.onNext(message)
 
-//        super.onLayout(changed, left, top, right, bottom)
+        super.onLayout(changed, left, top, right, bottom)
     }
 
     override fun onDraw(canvas: Canvas?) {
-        drawObs.onNext("draw: ${++countDraw}")
+//        drawObs.onNext("draw: ${++countDraw}")
 
         // Рисуем фон
         canvas?.drawARGB(255, 0, 151, 167)
@@ -74,6 +75,12 @@ class CustomView03 @JvmOverloads constructor(
             it.drawText("y = $y", (width / 2).toFloat(), (height / 3) * 2f, paint)
         }
     }
+
+    override fun draw(canvas: Canvas?) {
+        super.draw(canvas)
+        drawObs.onNext("draw: ${++countDraw}")
+    }
+
 
     override fun connectTo(): Observable<String> {
         return combinedObs

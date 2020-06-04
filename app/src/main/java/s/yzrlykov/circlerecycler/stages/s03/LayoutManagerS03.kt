@@ -29,16 +29,43 @@ class LayoutManagerS03(
         fillDown(recycler)
     }
 
+    /**
+     * Набор методов, которыми мы располагаем
+     */
+    private fun arsenal() {
+        /**
+         * Данные из RecyclerView
+         */
+        // Количество видимых сейчас элементов
+        val param1 = getChildCount()
+
+        // View первого видимого элемента (индекс 0)
+        val viewItem = getChildAt(0)
+
+
+        /**
+         * Данные из адаптера
+         */
+
+        // Количество элементов в адаптере
+        val param2 = getItemCount()
+
+        // Позиция View в адаптере
+        val position = getPosition(viewItem!!)
+
+    }
+
     private fun fillDown(recycler: RecyclerView.Recycler) {
         var position = 0
         var viewTop = 0
         var fillDown = true
 
+
         // Количество элементов в адаптере
         val itemQty = itemCount
 
-        // Стартовая точка, от которой начнет раскладывать.
-        // Её центр имеет координаты (R, 0)
+        // Стартовая точка, от которой начнем раскладывать.
+        // Её центр имеет координаты (R, 0) и размеры 0х0
         val viewData = ViewData(
             0, 0, 0, 0,
             quadrantHelper.getViewCenterPoint(0)
@@ -59,8 +86,16 @@ class LayoutManagerS03(
 
             position++
             viewTop = viewData.viewBottom
-            fillDown = viewTop <= height
+            fillDown = isLastLaidOutView(viewTop)
         }
+    }
+
+    /**
+     * View может максимально опуститься на (radius + dimen / 2).
+     * Потом начнет подниматься во втором квадранте.
+     */
+    private fun isLastLaidOutView(viewTop : Int) : Boolean {
+        return viewTop != (radius + dimen / 2)
     }
 
     override fun scrollVerticallyBy(
@@ -68,6 +103,9 @@ class LayoutManagerS03(
         recycler: RecyclerView.Recycler,
         state: RecyclerView.State?
     ): Int {
+
+        if(childCount == 0) return 0
+
         val delta = calculateVerticalScrollOffset(dy)
         offsetChildrenVertical(-delta)
 //        fill(recycler)
@@ -110,24 +148,16 @@ class LayoutManagerS03(
 
         var delta = 0
 
-        // Если контент уезжает вниз, то есть прокручиваем к верхней части контента
+        // Если палец идет вниз, то есть прокручиваем к верхней части контента
         if(dy < 0) {
 
             val firstVisibleView = getChildAt(0)!!
             val firstVisibleViewAdapterPos = getPosition(firstVisibleView)
 
-
-
         }
         else {
 
         }
-
-
-
-
-
-
         return 0
     }
 
@@ -225,4 +255,5 @@ class LayoutManagerS03(
     override fun canScrollVertically(): Boolean {
         return true
     }
+
 }

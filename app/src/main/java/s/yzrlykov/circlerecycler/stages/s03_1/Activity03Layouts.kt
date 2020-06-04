@@ -2,6 +2,7 @@ package s.yzrlykov.circlerecycler.stages.s03_1
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.SeekBar
 import android.widget.TextView
@@ -17,7 +18,7 @@ class Activity03Layouts : AppCompatActivity() {
     private lateinit var seekBar3: SeekBar
     private lateinit var seekBar4: SeekBar
 
-    private lateinit var textView: TextView
+    private lateinit var movingView: View
     private lateinit var textConsole1 : TextView
     private lateinit var textConsole2 : TextView
     private lateinit var frameLayout : FrameLayout
@@ -43,7 +44,7 @@ class Activity03Layouts : AppCompatActivity() {
         seekBar2 = findViewById(R.id.seek_bar_2)
         seekBar3 = findViewById(R.id.seek_bar_3)
         seekBar4 = findViewById(R.id.seek_bar_4)
-        textView = findViewById(R.id.tv_tv)
+        movingView = findViewById(R.id.tv_tv)
         frameLayout = findViewById(R.id.frame_layout)
         textConsole1 = findViewById(R.id.tv_console_1)
         textConsole2 = findViewById(R.id.tv_console_2)
@@ -55,7 +56,7 @@ class Activity03Layouts : AppCompatActivity() {
         seekBar3.setOnSeekBarChangeListener(seekChangeListener)
         seekBar4.setOnSeekBarChangeListener(seekChangeListener)
 
-        (textView as EventObservable<String>)
+        (movingView as EventObservable<String>)
             .connectTo()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -105,20 +106,20 @@ class Activity03Layouts : AppCompatActivity() {
 
             when (seekBar.id) {
                 R.id.seek_bar_1 -> {
-                    textView.offsetLeftAndRight((progress - lastProgress).px)
+                    movingView.offsetLeftAndRight((progress - lastProgress).px)
                     lastProgress = progress
                 }
                 R.id.seek_bar_2 -> {
-                    textView.offsetTopAndBottom((progress - lastProgress).px)
+                    movingView.offsetTopAndBottom((progress - lastProgress).px)
                     lastProgress = progress
                 }
 
                 R.id.seek_bar_3 -> {
-                    textView.translationX = (progress - seekInit).px.toFloat()
+                    movingView.translationX = (progress - seekInit).px.toFloat()
                 }
 
                 R.id.seek_bar_4 -> {
-                    textView.translationY = (progress - seekInit).px.toFloat()
+                    movingView.translationY = (progress - seekInit).px.toFloat()
                 }
             }
 
@@ -129,16 +130,16 @@ class Activity03Layouts : AppCompatActivity() {
              * Посмотреть:
              * https://www.youtube.com/watch?v=86p1GPEv_fY&t=5m42s
              *
-             * При движении seekBar'a мы меняем различные смещения у textView и элемент
+             * При движении seekBar'a мы меняем различные смещения у movingView и элемент
              * передвигается (изменяются его X/Y), НО при этом не вызывается ни один из,
              * методов onMeasure onLayout, onDraw.
              *
              * - onMeasure не вызывается, потому что родительский компонент не меняется и ему
              *   не нужно переизмерять вложенные элементы.
              * - onLayout не вызывается по той же причине: родительский элемент на том же месте
-             * - onDraw потому что ВНУТРИ textView ничего не надо перерисовывать.
+             * - onDraw потому что ВНУТРИ movingView ничего не надо перерисовывать.
              *
-             * Поэтому нужно принудительно перерисовать textView через invalidate. В этот
+             * Поэтому нужно принудительно перерисовать movingView через invalidate. В этот
              * момент он прочитает новые значения X/Y и выведет на экран.
              *
              *
@@ -146,8 +147,8 @@ class Activity03Layouts : AppCompatActivity() {
              *   выполнить layout. Родитель ставит в очередь UI-потока задание на layout
              *   (это будет measure + layout).
              */
-//            textView.requestLayout()
-//            textView.invalidate()
+//            movingView.requestLayout()
+//            movingView.invalidate()
         }
 
         override fun onStartTrackingTouch(seekBar: SeekBar?) {
