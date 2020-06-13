@@ -13,7 +13,7 @@ import io.reactivex.functions.Function3
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
-class CustomView03 @JvmOverloads constructor(
+class CustomView03_1 @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0

@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import s.yzrlykov.circlerecycler.domain.PointS2
 import s.yzrlykov.circlerecycler.domain.ViewData
 import s.yzrlykov.circlerecycler.domain.helpers.FirstQuadrantHelper
+import s.yzrlykov.circlerecycler.logIt
+import kotlin.math.min
 
 class LayoutManagerS03(
     private val radius: Int,
@@ -15,7 +17,7 @@ class LayoutManagerS03(
     private val y0: Int = 0
 ) : RecyclerView.LayoutManager() {
 
-    val helperPoint = UpdatablePoint(0, 0)
+    private val helperPoint = UpdatablePoint(0, 0)
 
     /**
      * Кэш View для работы со скролом
@@ -34,26 +36,34 @@ class LayoutManagerS03(
     /**
      * Набор методов, которыми мы располагаем
      */
-    private fun arsenal() {
+    private fun arsenal(recycler: RecyclerView.Recycler) {
+
+        // Это индекс видимого элемента внутри RecyclerView
+        val i = 0
+        // Это индекс в адаптере
+        var position = 0
+
         /**
          * Данные из RecyclerView
          */
         // Количество видимых сейчас элементов
         val param1 = getChildCount()
 
-        // View первого видимого элемента (индекс 0)
-        val viewItem = getChildAt(0)
-
+        // View видимого элемента с индексом i
+        val viewItem = getChildAt(i)
 
         /**
-         * Данные из адаптера
+         * Данные из адаптера (recycler'a)
          */
+
+        // View для элемента адаптера с индексом position
+        val view = recycler.getViewForPosition(position)
 
         // Количество элементов в адаптере
         val param2 = getItemCount()
 
         // Позиция View в адаптере
-        val position = getPosition(viewItem!!)
+        position = getPosition(view)
 
     }
 
@@ -76,9 +86,7 @@ class LayoutManagerS03(
         val widthSpec = View.MeasureSpec.makeMeasureSpec(dimen, View.MeasureSpec.EXACTLY)
         val heightSpec = View.MeasureSpec.makeMeasureSpec(dimen, View.MeasureSpec.EXACTLY)
 
-
         val view = recycler.getViewForPosition(position)
-
         addView(view)
         measureChildWithInsets(view, widthSpec, heightSpec)
 
@@ -107,14 +115,6 @@ class LayoutManagerS03(
 //        }
     }
 
-    /**
-     * View может максимально опуститься на (radius + dimen / 2).
-     * Потом начнет подниматься во втором квадранте.
-     */
-    private fun isLastLaidOutView(viewTop: Int): Boolean {
-        return viewTop != (radius + dimen / 2)
-    }
-
     override fun scrollVerticallyBy(
         dy: Int,
         recycler: RecyclerView.Recycler,
@@ -128,16 +128,16 @@ class LayoutManagerS03(
 //        fill(recycler)
 
         val delta = calculateVerticalDelta(dy)
+        logIt("dy = $dy, delta = $delta")
         getChildAt(0)?.let {
-            scrollSingleView(it, delta)
+            it.visibility = View.INVISIBLE
+            scrollSingleView(it, -delta)
         }
 
         return delta
     }
 
     private fun calculateVerticalDelta(dy: Int): Int {
-        var result = dy
-
 
         // Количество приаттаченных элементов к RecyclerView (Наверное количество видимых элементов)
         val childCount = childCount
@@ -147,35 +147,55 @@ class LayoutManagerS03(
         }
 
         // Случай, когда View достигла края верхнего или нижнего
-//        getChildAt(0)?.let { view ->
-//            val viewTop = getDecoratedTop(view)
-//            if (viewTop < 0 || isLastLaidOutView(viewTop)) {
-//                return 0
-//            }
-//        }
+        getChildAt(0)?.let { view ->
 
-        return result
+            val viewTop = view.top
+
+            return if((inTopPosition(view) && dy > 0) || (inBottomPosition(view) && dy < 0)) {
+                0
+            } else if (viewTop > 0 && dy > 0) {
+                min(dy, viewTop)
+            } else {
+                dy
+            }
+        }
+
+        return dy
     }
 
-    private fun scrollSingleView(view : View, dy : Int) {
+    private fun inTopPosition(view : View) : Boolean {
+        return view.top <= 0
+    }
 
-        val centerX = view.right - dimen/2
-        val centerY = view.bottom - dimen/2
+    private fun inBottomPosition(view : View) : Boolean {
+        return view.top == (radius - dimen / 2) || view.left <= 0
+    }
+
+    /**
+     * View может максимально опуститься на (radius - dimen / 2).
+     * Потом начнет подниматься во втором квадранте.
+     */
+    private fun isLastLaidOutView(viewTop: Int): Boolean {
+        return viewTop == (radius - dimen / 2)
+    }
+
+    private fun scrollSingleView(view: View, _dy: Int) {
+
+        val centerX = view.right - dimen / 2
+        val centerY = view.bottom - dimen / 2
 
         helperPoint.update(centerX, centerY)
 
         val centerPointIndex = quadrantHelper.getViewCenterPointIndex(helperPoint)
-        val newCenterPOintIndex = quadrantHelper.getNewCenterPointIndex(centerPointIndex + dy)
+        val newCenterPointIndex = quadrantHelper.getNewCenterPointIndex(centerPointIndex + _dy)
 
-        val newCetrerPoint = quadrantHelper.getViewCenterPoint(newCenterPOintIndex)
+        val newCenterPoint = quadrantHelper.getViewCenterPoint(newCenterPointIndex)
 
-        val dx = newCetrerPoint.x - centerX
-        val dy = newCetrerPoint.y - centerY
+        val dx = newCenterPoint.x - centerX
+        val dy = newCenterPoint.y - centerY
 
         view.offsetTopAndBottom(dy)
         view.offsetLeftAndRight(dx)
-
-
     }
 
     /**

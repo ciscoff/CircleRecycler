@@ -2,6 +2,7 @@ package s.yzrlykov.circlerecycler.stages.s03
 
 import android.graphics.Paint
 import android.os.Bundle
+import android.util.TypedValue
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -26,11 +27,17 @@ class Activity03CirclePoints : AppCompatActivity() {
 
     private val paint = Paint()
 
+//    private val radiusRatio = with(TypedValue()) {
+//        application.resources.getValue(R.dimen.circle_radius_ratio, this, true)
+//        float
+//    }
+
     private var radius = 0
         set(value) {
             field = abs(value.toFloat() * 0.66).toInt()
         }
 
+    // Размер одного элемента RecyclerView (он квадратный)
     private var dimenListItem = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,10 +70,11 @@ class Activity03CirclePoints : AppCompatActivity() {
         paint.color = ContextCompat.getColor(this, R.color.quadrant_fill_color)
         paint.strokeWidth = 1f
 
-        // Закрашиваем оба сегмента одним цветом
+        // Закрашиваем первый квадрант (два октанта) цветом
         circlePointsCreator =
             FirstQuadrantCirclePointsCreator(radius, x0.toInt(), y0.toInt(), paint.color)
 
+        // Генерим точки периметра окружности
         createCirclePoints()
     }
 
@@ -82,8 +90,6 @@ class Activity03CirclePoints : AppCompatActivity() {
     private fun initRecyclerView(adapterS03: AdapterS03) {
 
         recyclerView.apply {
-            //            setHasFixedSize(true)
-//            itemAnimator = DefaultItemAnimator()
             adapter = adapterS03
             layoutManager = LayoutManagerS03(radius, dimenListItem, 0, 0)
         }

@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top|end" />
 
-        <s.yzrlykov.circlerecycler.stages.s03_1.CustomView03
+        <s.yzrlykov.circlerecycler.stages.s03_1.CustomView03_1
             android:id="@+id/tv_tv"
             android:layout_width="@dimen/custom_text_view_size_03"
             android:layout_height="@dimen/custom_text_view_size_03"
