@@ -1,23 +1,28 @@
-package s.yzrlykov.circlerecycler.stages.s03
+package s.yzrlykov.circlerecycler.stages.s04
 
 import android.graphics.Rect
 import android.util.SparseArray
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import s.yzrlykov.circlerecycler.domain.PointS2
+import s.yzrlykov.circlerecycler.domain.UpdatablePoint
 import s.yzrlykov.circlerecycler.domain.ViewData
 import s.yzrlykov.circlerecycler.domain.helpers.FirstQuadrantHelper
 import s.yzrlykov.circlerecycler.logIt
+import kotlin.math.max
 import kotlin.math.min
 
-class LayoutManagerS03(
+class LayoutManagerS04(
     private val radius: Int,
     private val dimen: Int,
     private val x0: Int = 0,
     private val y0: Int = 0
 ) : RecyclerView.LayoutManager() {
 
-    private val helperPoint = UpdatablePoint(0, 0)
+    private val helperPoint =
+        UpdatablePoint(0, 0)
+
+    private val recyclerViewHeight = radius + dimen / 2
 
     /**
      * Кэш View для работы со скролом
@@ -37,10 +42,10 @@ class LayoutManagerS03(
     }
 
     private fun fillDown(recycler: RecyclerView.Recycler) {
-        var position = 0
-        var viewTop = 0
-        var fillDown = true
+        val dbgPrefix = object {}.javaClass.enclosingMethod?.name
 
+        var position = 0
+        var fillDown = true
 
         // Количество элементов в адаптере
         val itemQty = itemCount
@@ -55,34 +60,19 @@ class LayoutManagerS03(
         val widthSpec = View.MeasureSpec.makeMeasureSpec(dimen, View.MeasureSpec.EXACTLY)
         val heightSpec = View.MeasureSpec.makeMeasureSpec(dimen, View.MeasureSpec.EXACTLY)
 
-        val view = recycler.getViewForPosition(position)
-        view.tag = System.currentTimeMillis()
-        addView(view)
-        measureChildWithInsets(view, widthSpec, heightSpec)
+        while (fillDown && position < itemQty) {
+            val view = recycler.getViewForPosition(position)
 
-        val viewCenter = quadrantHelper.findNextViewCenter(viewData, dimen / 2, dimen / 2)
-        performLayout(view, viewCenter, dimen / 2, dimen / 2)
-        viewData.updateData(view, viewCenter)
+            addView(view)
+            measureChildWithInsets(view, widthSpec, heightSpec)
 
-//        position++
-//        viewTop = viewData.viewBottom
-//        fillDown = isLastLaidOutView(viewTop)
+            val viewCenter = quadrantHelper.findNextViewCenter(viewData, dimen / 2, dimen / 2)
+            performLayout(view, viewCenter, dimen / 2, dimen / 2)
+            viewData.updateData(view, viewCenter)
 
-
-//        while (fillDown && position < itemQty) {
-//            val view = recycler.getViewForPosition(position)
-//
-//            addView(view)
-//            measureChildWithInsets(view, widthSpec, heightSpec)
-//
-//            val viewCenter = quadrantHelper.findNextViewCenter(viewData, dimen / 2, dimen / 2)
-//            performLayout(view, viewCenter, dimen / 2, dimen / 2)
-//            viewData.updateData(view, viewCenter)
-//
-//            position++
-//            viewTop = viewData.viewBottom
-//            fillDown = isLastLaidOutView(viewTop)
-//        }
+            position++
+            fillDown = !isLastLaidOutView(view)
+        }
     }
 
     override fun scrollVerticallyBy(
@@ -93,19 +83,35 @@ class LayoutManagerS03(
 
         if (childCount == 0) return 0
 
-//        val delta = calculateVerticalScrollOffset(dy)
-//        offsetChildrenVertical(-delta)
-//        fill(recycler)
-
-        val delta = calculateVerticalDelta(dy)
-        getChildAt(0)?.let {
-            scrollSingleView(it, -delta)
-        }
-
-        return delta
+        return getChildAt(0)?.let { firstView ->
+            getChildAt(childCount - 1)?.let { lastView ->
+                val delta = calculateVerticalDelta(firstView, lastView, dy)
+                scrollAll(firstView, delta)
+                delta
+            } ?: 0
+        } ?: 0
     }
 
-    private fun calculateVerticalDelta(dy: Int): Int {
+    private fun scrollAll(firstView: View, delta: Int) {
+
+        val firstViewNewCenter = scrollSingleViewVerticallyBy(firstView, delta)
+
+        val previousViewData = ViewData(
+            firstView.top,
+            firstView.bottom,
+            firstView.left,
+            firstView.right,
+            firstViewNewCenter
+        )
+
+        for (i in 1 until childCount) {
+            getChildAt(i)?.let { view ->
+                scrollSingleView(previousViewData, view)
+            }
+        }
+    }
+
+    private fun calculateVerticalDelta(firstView: View, lastView: View, dy: Int): Int {
 
         // Количество приаттаченных элементов к RecyclerView (Наверное количество видимых элементов)
         val childCount = childCount
@@ -114,41 +120,84 @@ class LayoutManagerS03(
             return 0
         }
 
-        // Случай, когда View достигла края верхнего или нижнего
-        getChildAt(0)?.let { view ->
+        var delta = 0
 
-            val viewTop = view.top
-
-            return if((inTopPosition(view) && dy > 0) || (inBottomPosition(view) && dy < 0)) {
-                0
-            } else if (viewTop > 0 && dy > 0) {
-                min(dy, viewTop)
+        // Палец вверх, контент вверх
+        if (dy > 0) {
+            if (isLastItemReached()) {
+                val bottomOffset = calculateBottomOffset(lastView)
+                delta = max(-dy, bottomOffset)
             } else {
-                dy
+                delta = -dy
+            }
+        } else {
+            val topOffset = firstView.top
+
+            if (isFirstItemReached()) {
+                delta = -max(dy, topOffset)
+            } else {
+                delta = -dy
             }
         }
-
-        return dy
+        return delta
     }
 
-    private fun inTopPosition(view : View) : Boolean {
+    private fun calculateBottomOffset(view: View): Int {
+        var offset = 0
+
+        val viewLeft = view.left
+        val viewBottomOffset = view.bottom - recyclerViewHeight
+
+        if (viewLeft <= 0) {
+            if (viewBottomOffset > 0) {
+                offset = min(-viewLeft, viewBottomOffset)
+            } else {
+                offset = viewLeft
+            }
+        } else {
+            offset = -viewBottomOffset
+        }
+
+        return offset
+
+    }
+
+    private fun inTopPosition(view: View): Boolean {
         return view.top <= 0
     }
 
-    private fun inBottomPosition(view : View) : Boolean {
+    private fun inBottomPosition(view: View): Boolean {
         return view.top == (radius - dimen / 2) || view.left <= 0
     }
 
     /**
-     * View может максимально опуститься на (radius - dimen / 2).
-     * Потом начнет подниматься во втором квадранте.
+     * Последняя View либо касается своей левой стороной левого края экрана
+     * либо немного выходит за его пределы.
      */
-    private fun isLastLaidOutView(viewTop: Int): Boolean {
-        return viewTop == (radius - dimen / 2)
+    private fun isLastLaidOutView(view: View): Boolean {
+        return view.left <= 0
     }
 
-    private fun scrollSingleView(view: View, _dy: Int) {
-        logIt("Scrolling view with tag ${view.tag as Long}")
+    /**
+     * Прокрутили максимально вниз
+     */
+    private fun isFirstItemReached(): Boolean {
+        return getChildAt(0)?.let { firstView ->
+            getPosition(firstView) == 0
+        } ?: false
+
+    }
+
+    /**
+     * Прокрутили максимально вверх
+     */
+    private fun isLastItemReached(): Boolean {
+        return getChildAt(childCount - 1)?.let { lastView ->
+            getPosition(lastView) == itemCount
+        } ?: false
+    }
+
+    private fun scrollSingleViewVerticallyBy(view: View, _dy: Int): PointS2 {
 
         val centerX = view.right - dimen / 2
         val centerY = view.bottom - dimen / 2
@@ -165,7 +214,32 @@ class LayoutManagerS03(
 
         view.offsetTopAndBottom(dy)
         view.offsetLeftAndRight(dx)
+
+        return newCenterPoint
     }
+
+    private fun scrollSingleView(previousViewData: ViewData, view: View) {
+
+        val width = view.width
+        val height = view.height
+
+        val viewCenterX = view.right - width / 2
+        val viewCenterY = view.top + height / 2
+
+        helperPoint.update(viewCenterX, viewCenterY)
+        val centerPointIndex: Int = quadrantHelper.getViewCenterPointIndex(helperPoint)
+        val oldCenterPoint = quadrantHelper.getViewCenterPoint(centerPointIndex)
+        val newCenterPoint =
+            quadrantHelper.findNextViewCenter(previousViewData, width / 2, height / 2)
+        val dX: Int = newCenterPoint.x - oldCenterPoint.x
+        val dY: Int = newCenterPoint.y - oldCenterPoint.y
+
+        view.offsetTopAndBottom(dY)
+        view.offsetLeftAndRight(dX)
+
+        previousViewData.updateData(view, newCenterPoint)
+    }
+
 
     /**
      * Вычислить реальный офсет прокрутки
@@ -222,14 +296,13 @@ class LayoutManagerS03(
         halfViewWidth: Int,
         halfViewHeight: Int
     ) {
-
         var (left, top, bottom, right) = listOf(0, 0, 0, 0)
 
-        top = viewCenter.getY() - halfViewHeight
-        bottom = viewCenter.getY() + halfViewHeight
+        top = viewCenter.y - halfViewHeight
+        bottom = viewCenter.y + halfViewHeight
 
-        left = viewCenter.getX() - halfViewWidth
-        right = viewCenter.getX() + halfViewWidth
+        left = viewCenter.x - halfViewWidth
+        right = viewCenter.x + halfViewWidth
 
         layoutDecorated(view, left, top, right, bottom)
     }
@@ -250,7 +323,7 @@ class LayoutManagerS03(
 
         val lp = child.layoutParams as RecyclerView.LayoutParams
 
-        // Корректируем размеры самой вьюхи, чтобы она "подвинулась" с четом размеров инсетов.
+        // Корректируем размеры самой вьюхи, чтобы она "подвинулась" с учетом размеров инсетов.
         val widthSpecUpdated = updateSpecWithExtra(
             widthSpec,
             lp.leftMargin + decorRect.left,

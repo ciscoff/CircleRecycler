@@ -4,8 +4,9 @@
     <!-- Menus -->
     <string name="menu_01_circle_points">01. Circle Points</string>
     <string name="menu_02_vertical_layout">02. Vertical Layout</string>
-    <string name="menu_03_vertical_scroll">03. Vertical Scroll</string>
+    <string name="menu_03_vertical_scroll">03. Vertical Scroll Single Item</string>
     <string name="menu_03_offsets_edu">03.1 Moving View</string>
+    <string name="menu_04_vertical_scroll">04. Vertical Scroll All Items</string>
 
 
     <!--    Buttons -->

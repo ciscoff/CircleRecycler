@@ -5,6 +5,7 @@ import android.util.SparseArray
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import s.yzrlykov.circlerecycler.domain.PointS2
+import s.yzrlykov.circlerecycler.domain.UpdatablePoint
 import s.yzrlykov.circlerecycler.domain.ViewData
 import s.yzrlykov.circlerecycler.domain.helpers.FirstQuadrantHelper
 import s.yzrlykov.circlerecycler.logIt
@@ -17,7 +18,8 @@ class LayoutManagerS03(
     private val y0: Int = 0
 ) : RecyclerView.LayoutManager() {
 
-    private val helperPoint = UpdatablePoint(0, 0)
+    private val helperPoint =
+        UpdatablePoint(0, 0)
 
     /**
      * Кэш View для работы со скролом

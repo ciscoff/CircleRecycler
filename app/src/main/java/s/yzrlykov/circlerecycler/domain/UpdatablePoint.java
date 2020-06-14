@@ -1,7 +1,4 @@
-package s.yzrlykov.circlerecycler.stages.s03;
-
-
-import s.yzrlykov.circlerecycler.domain.PointS2;
+package s.yzrlykov.circlerecycler.domain;
 
 public class UpdatablePoint extends PointS2 {
 

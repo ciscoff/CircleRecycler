@@ -1,8 +1,7 @@
-package s.yzrlykov.circlerecycler.stages.s03
+package s.yzrlykov.circlerecycler.stages.s04
 
 import android.graphics.Paint
 import android.os.Bundle
-import android.util.TypedValue
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -10,10 +9,12 @@ import s.yzrlykov.circlerecycler.R
 import s.yzrlykov.circlerecycler.domain.PointS2
 import s.yzrlykov.circlerecycler.domain.pointcreator.FirstQuadrantCirclePointsCreator
 import s.yzrlykov.circlerecycler.extensions.dimensionPix
+import s.yzrlykov.circlerecycler.stages.s03.AdapterS03
+import s.yzrlykov.circlerecycler.stages.s03.LayoutManagerS03
 import kotlin.math.abs
 import kotlin.math.min
 
-class Activity03CirclePoints : AppCompatActivity() {
+class Activity04Scrolling : AppCompatActivity() {
     private lateinit var circlePointsCreator: FirstQuadrantCirclePointsCreator
     private lateinit var recyclerView: RecyclerView
 
@@ -27,11 +28,6 @@ class Activity03CirclePoints : AppCompatActivity() {
 
     private val paint = Paint()
 
-//    private val radiusRatio = with(TypedValue()) {
-//        application.resources.getValue(R.dimen.circle_radius_ratio, this, true)
-//        float
-//    }
-
     private var radius = 0
         set(value) {
             field = abs(value.toFloat() * 0.66).toInt()
@@ -42,13 +38,13 @@ class Activity03CirclePoints : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_03_vertical_scroll)
+        setContentView(R.layout.activity_04_vertical_scroll)
 
         initMetrics()
         findViews()
         warmUp()
-//        initRecyclerView(AdapterS03(resources.getStringArray(R.array.list_item_titles).toList()))
-        initRecyclerView(AdapterS03(listOf("Item_1")))
+        initRecyclerView(AdapterS04(resources.getStringArray(R.array.list_item_titles).toList()))
+
     }
 
     private fun findViews() {
@@ -88,11 +84,17 @@ class Activity03CirclePoints : AppCompatActivity() {
         circlePointsCreator.fillCirclePoints(mapIndexPoint, mapPointIndex)
     }
 
-    private fun initRecyclerView(adapterS03: AdapterS03) {
+    private fun initRecyclerView(adapterS04: AdapterS04) {
 
         recyclerView.apply {
-            adapter = adapterS03
-            layoutManager = LayoutManagerS03(radius, dimenListItem, 0, 0)
+            adapter = adapterS04
+            layoutManager =
+                LayoutManagerS04(
+                    radius,
+                    dimenListItem,
+                    0,
+                    0
+                )
         }
     }
 

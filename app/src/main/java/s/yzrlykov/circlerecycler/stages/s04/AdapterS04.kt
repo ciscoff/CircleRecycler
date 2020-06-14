@@ -1,4 +1,4 @@
-package s.yzrlykov.circlerecycler.stages.s03
+package s.yzrlykov.circlerecycler.stages.s04
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import s.yzrlykov.circlerecycler.R
 
-class AdapterS03(private val model: List<String>) : RecyclerView.Adapter<AdapterS03.ViewHolder>() {
+class AdapterS04(private val model: List<String>) : RecyclerView.Adapter<AdapterS04.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             LayoutInflater.from(parent.context).inflate(

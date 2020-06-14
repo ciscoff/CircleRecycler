@@ -20,6 +20,7 @@
         </activity>
         <activity android:name=".stages.s02.Activity02CirclePoints" />
         <activity android:name=".stages.s03.Activity03CirclePoints" />
+        <activity android:name=".stages.s04.Activity04Scrolling" />
     </application>
 
 </manifest>
