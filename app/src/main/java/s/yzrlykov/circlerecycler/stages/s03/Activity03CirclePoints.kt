@@ -47,7 +47,8 @@ class Activity03CirclePoints : AppCompatActivity() {
         initMetrics()
         findViews()
         warmUp()
-        initRecyclerView(AdapterS03(resources.getStringArray(R.array.list_item_titles).toList()))
+//        initRecyclerView(AdapterS03(resources.getStringArray(R.array.list_item_titles).toList()))
+        initRecyclerView(AdapterS03(listOf("Item_1")))
     }
 
     private fun findViews() {

@@ -30,41 +30,10 @@ class LayoutManagerS03(
     private val quadrantHelper = FirstQuadrantHelper(radius, x0, y0)
 
     override fun onLayoutChildren(recycler: RecyclerView.Recycler, state: RecyclerView.State?) {
+
+        // Метод ОБЯЗАТЕЛЕН !!!
+        detachAndScrapAttachedViews(recycler)
         fillDown(recycler)
-    }
-
-    /**
-     * Набор методов, которыми мы располагаем
-     */
-    private fun arsenal(recycler: RecyclerView.Recycler) {
-
-        // Это индекс видимого элемента внутри RecyclerView
-        val i = 0
-        // Это индекс в адаптере
-        var position = 0
-
-        /**
-         * Данные из RecyclerView
-         */
-        // Количество видимых сейчас элементов
-        val param1 = getChildCount()
-
-        // View видимого элемента с индексом i
-        val viewItem = getChildAt(i)
-
-        /**
-         * Данные из адаптера (recycler'a)
-         */
-
-        // View для элемента адаптера с индексом position
-        val view = recycler.getViewForPosition(position)
-
-        // Количество элементов в адаптере
-        val param2 = getItemCount()
-
-        // Позиция View в адаптере
-        position = getPosition(view)
-
     }
 
     private fun fillDown(recycler: RecyclerView.Recycler) {
@@ -87,6 +56,7 @@ class LayoutManagerS03(
         val heightSpec = View.MeasureSpec.makeMeasureSpec(dimen, View.MeasureSpec.EXACTLY)
 
         val view = recycler.getViewForPosition(position)
+        view.tag = System.currentTimeMillis()
         addView(view)
         measureChildWithInsets(view, widthSpec, heightSpec)
 
@@ -128,9 +98,7 @@ class LayoutManagerS03(
 //        fill(recycler)
 
         val delta = calculateVerticalDelta(dy)
-        logIt("dy = $dy, delta = $delta")
         getChildAt(0)?.let {
-            it.visibility = View.INVISIBLE
             scrollSingleView(it, -delta)
         }
 
@@ -180,6 +148,7 @@ class LayoutManagerS03(
     }
 
     private fun scrollSingleView(view: View, _dy: Int) {
+        logIt("Scrolling view with tag ${view.tag as Long}")
 
         val centerX = view.right - dimen / 2
         val centerY = view.bottom - dimen / 2
@@ -340,6 +309,40 @@ class LayoutManagerS03(
 
     override fun canScrollVertically(): Boolean {
         return true
+    }
+
+    /**
+     * Набор методов, которыми мы располагаем
+     */
+    private fun arsenal(recycler: RecyclerView.Recycler) {
+
+        // Это индекс видимого элемента внутри RecyclerView
+        val i = 0
+        // Это индекс в адаптере
+        var position = 0
+
+        /**
+         * Данные из RecyclerView
+         */
+        // Количество видимых сейчас элементов
+        val param1 = getChildCount()
+
+        // View видимого элемента с индексом i
+        val viewItem = getChildAt(i)
+
+        /**
+         * Данные из адаптера (recycler'a)
+         */
+
+        // View для элемента адаптера с индексом position
+        val view = recycler.getViewForPosition(position)
+
+        // Количество элементов в адаптере
+        val param2 = getItemCount()
+
+        // Позиция View в адаптере
+        position = getPosition(view)
+
     }
 
 }
